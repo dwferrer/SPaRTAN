@@ -190,7 +190,7 @@ int main(){
 	//testDirect();
 	//pythonTest();
 
-	testrTimeStep();
+	testMicro();
 
 	return 0;
 
