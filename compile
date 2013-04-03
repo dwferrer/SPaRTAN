@@ -1,0 +1,1 @@
+icc -g  -openmp -fp-model strict -O0 -o testsph test.cc -lstdc++ -liomp5  -lgsl -lgslcblas -lm

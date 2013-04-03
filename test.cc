@@ -1,0 +1,197 @@
+/*
+ * test.cc
+ *
+ *  Created on: Nov 5, 2012
+ *      Author: dferrer
+ */
+#include "sph.cc"
+#include "StopWatch.cc"
+#include <cassert>
+#include <iostream>
+#include <gsl/gsl_rng.h>
+#include <fenv.h>
+
+
+void testCoverTree(){
+	std::cout<<"...Starting Cover Tree Test...\n";
+	int size = 2<<15;
+	std::vector<particlestructure> particles;
+	particles.resize(size);
+	for(int i = 0; i <size; i++ ){
+		float3 x (i/(1.0*((float)(size))),0,0);
+		particles[i].position = x;
+	}
+	for (int i = 1; i < size; i++){
+		assert( particles[i-1].position.x <  particles[i].position.x);
+		}
+	StopWatch setuptime("Cover Tree Setup Time");
+	setuptime.Start();
+	setupCoverTree(particles, 2.0);
+	setuptime.Stop();
+	std::cout<<"Cover Tree Setup Time: "<<setuptime.Elapsed()<<" s \n";
+
+	StopWatch runtime("32 Nearest Neighbors Recovery and Iteration Time");
+	runtime.Start();
+#pragma omp parallel for schedule(dynamic,1)
+	for(int i = 0; i < size; i++){
+		std::vector<particlestructure> NN = particlecovertree->kNearestNeighbors(particles[i],100);
+		for(int j = 0; j < 32; j++){
+			float x = NN[j].position.x;
+			float highbound = particles[i].position.x + 100.0/((float)(size));
+			float lowbound = particles[i].position.x - 100.0/((float)(size));
+			if (x >= highbound || x <= lowbound ){
+				std::cout<<"Problem! Assertion  "<<lowbound<<" < " <<x <<" < "<<highbound<<" is going to fail.\n";
+			}
+			assert(x < highbound);
+			assert(x > lowbound);
+		}
+	}
+	runtime.Stop();
+	std::cout<<"\nRun time: "<<runtime.Elapsed()<<" s\n";
+	std::cout<<"Rate: "<< size/runtime.Elapsed()<<" particles/s\n\n";
+	std::cout<<"...............Passed CoverTree Test................\n";
+}
+
+
+
+void testDirect(){
+	std::cout<<"\n...Starting Direct Gravity Test...\n";
+	long int size = 2<<15;
+	std::vector<particlestructure> particles;
+	particles.resize(size);
+	std::cout<<"Size: "<<size<<"\n";
+
+	const gsl_rng_type * T;
+	gsl_rng * r;
+
+	gsl_rng_env_setup();
+
+	T = gsl_rng_default; //The mersene twister
+	r = gsl_rng_alloc (T);
+	gsl_rng_set(r,time(0));
+
+	for(int i = 0; i < size; i++){
+		float3 pos(gsl_rng_uniform(r),gsl_rng_uniform(r),gsl_rng_uniform(r));
+		particles[i].position = pos;
+	}
+	StopWatch runtime("Direct Runtime");
+	runtime.Start();
+	std::vector<float3> acc;
+	acc.resize(size);
+	directGrav(particles,acc);
+	runtime.Stop();
+	std::cout<<"\nRun time: "<<runtime.Elapsed()<<" s\n";
+	std::cout<<"Rate: "<< (double)(size*size)/(pow(10,9)*runtime.Elapsed())<<" Gdirect/s \n\n";
+	std::cout<<"...............Passed Direct Test................\n";
+
+
+}
+
+
+void testTimeStep(){
+	std::cout<<"\n...Starting Single Timestep Test...\n";
+	long int size = cube(40);
+	std::vector<particlestructure> particles;
+	particles.reserve(size);
+	std::cout<<"Size: "<<size<<"\n";
+
+	int count = makeHomogeneousSphere(particles,40,rad);
+	std::cout<<"Sphere count: "<<count<<"\n";
+	StopWatch runtime("Single Timestep");
+	runtime.Start();
+	float dt  = timestep(particles,true);
+	runtime.Stop();
+	std::cout<<"dt: "<<dt<<"\n";
+	std::cout<<"\nRun time: "<<runtime.Elapsed()<<" s\n";
+	std::cout<<"Rate: "<< (double)(count)/(runtime.Elapsed())<<" particle/s \n\n";
+	std::cout<<"...............Passed Single Time Step Test................\n";
+
+}
+
+void testrTimeStep(){
+	std::cout<<"\n...Starting Single Timestep Test...\n";
+	long int size = cube(25);
+	std::vector<particlestructure> particles;
+	particles.reserve(size);
+	std::cout<<"Size: "<<size<<"\n";
+
+	int count = makeHomogeneousSphere(particles,25,rad);
+	std::cout<<"Sphere count: "<<count<<"\n";
+	StopWatch runtime("Single Timestep");
+	std::vector<float3> a(count,(float3)(0,0,0));
+	float fs =0;
+	runtime.Start();
+	float dt  = reversibletimestep(particles,a,fs,true,false);
+	runtime.Stop();
+	std::cout<<"dt: "<<dt<<"\n";
+	std::cout<<"\nRun time: "<<runtime.Elapsed()<<" s\n";
+	std::cout<<"Rate: "<< (double)(count)/(runtime.Elapsed())<<" particle/s \n\n";
+	std::cout<<"...............Passed Single Time Step Test................\n";
+
+}
+
+void testMicro(){
+	std::cout<<"\n...Starting Microstep Test...\n";
+	long int size = cube(n1d);
+	std::vector<particlestructure> particles;
+	particles.reserve(size);
+	std::cout<<"Size: "<<size<<"\n";
+
+	int count = makeHomogeneousSphere(particles,n1d,rad);
+	std::cout<<"Sphere count: "<<count<<"\n";
+	StopWatch runtime("Single Timestep");
+	runtime.Start();
+
+	float dt  = timestep(particles,1,0,0);
+	float smalldt = dt;
+	for (int i = 0; i < 100; i++) dt  += microstep(particles,smalldt);
+	runtime.Stop();
+	std::cout<<"Total dt: "<<dt<<"\n";
+	std::cout<<"Last Small dt: "<<smalldt<<"\n";
+	std::cout<<"\nRun time: "<<runtime.Elapsed()<<" s\n";
+	std::cout<<"Rate: "<< 101*(double)(count)/(runtime.Elapsed())<<" particle/s \n\n";
+	std::cout<<"...............Passed Single Time Step Test................\n";
+}
+
+void pythonTest(){
+	int n1d = 20;
+	int size = cube(20);
+	std::vector<particlestructure> * ps = getPS(20);
+
+
+	int s = getsize(ps);
+	float * g = new float[3*s];
+	for(int i = 0; i < 3*s; i++) g[i] = 0;
+	getg(ps,g);
+	delete[] g;
+
+
+	float dt = stepforward(ps,1,0,0.0);
+	float totaldt  = dt;
+	float smalldt = dt;
+	for(int i = 0; i < 30; i++){
+		dt = domicro(ps,&smalldt);
+		totaldt += dt;
+		std::cout<<"i: "<<"\n";
+		std::cout<<"dt: "<<dt<<"\n";
+		std::cout<<"microdt: "<<smalldt<<"\n";
+		std::cout<<"total time: "<<totaldt<<" ka\n";
+	}
+	dt = stepforward(ps,0,1);
+	totaldt += dt;
+	std::cout<<"total time: "<<totaldt<<" ka\n";
+	delete ps;
+
+}
+
+int main(){
+	feenableexcept(FE_INVALID | FE_DIVBYZERO);
+	//testCoverTree();
+	//testDirect();
+	//pythonTest();
+
+	testrTimeStep();
+
+	return 0;
+
+}
