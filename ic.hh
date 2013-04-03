@@ -59,8 +59,10 @@ int makeHomogeneousSphere(std::vector<particlestructure> &p, int n1d,float radiu
 
 					p[particlesadded] = pijk;
 					p[particlesadded].NN.resize(NSMOOTH);
-					float myphi =2*sq(pijk.position.z/pijk.position.norm())-1;
+					float myphi;
 					if (pijk.position.norm() == 0) myphi = 0;
+					else myphi =2*sq(pijk.position.z/pijk.position.norm())-1;
+
 					phi.push_back(myphi);
 					particlesadded++;
 				}
