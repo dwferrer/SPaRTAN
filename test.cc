@@ -124,7 +124,13 @@ void testTimeStep(){
 }
 
 void testrTimeStep(){
-	int steps = 10;
+	ctsetup = new StopWatch("ctsetup");
+	nnupdate = new StopWatch("nnupdate");
+	grav = new StopWatch("cudagrav");
+	sph = new StopWatch("sph");
+	kdk = new StopWatch("kdk");
+	getrdt = new StopWatch("rdt");
+	int steps = 20;
 	std::cout<<"\n...Starting Single Timestep Test...\n";
 	long int size = cube(60);
 	std::vector<particlestructure> particles;
@@ -143,8 +149,17 @@ void testrTimeStep(){
 	std::cout<<"dt: "<<dt<<"\n";
 	std::cout<<"\nRun time: "<<runtime.Elapsed()<<" s\n";
 	std::cout<<"Rate: "<< steps *(double)(count)/(runtime.Elapsed())<<" particle/s \n\n";
-	std::cout<<"...............Passed Single Time Step Test................\n";
+	printf("Timing Breakdown: \n\tCoverTree Setup: %f\n\tNN Update: %f\n\tGravity: %f\n\tSPH: %f\n\tKDK: %f\n\tChoose TimeStep:%f\n",
+			ctsetup->Elapsed(),nnupdate->Elapsed(),grav->Elapsed(),sph->Elapsed(),kdk->Elapsed(),getrdt->Elapsed());
 
+
+	std::cout<<"...............Passed Single Time Step Test................\n";
+	delete ctsetup;
+	delete nnupdate;
+	delete grav;
+	delete sph;
+	delete kdk;
+	delete getrdt;
 }
 
 void testMicro(){

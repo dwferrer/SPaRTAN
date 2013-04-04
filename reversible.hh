@@ -11,9 +11,10 @@
 #include "StopWatch.cc"
 StopWatch *ctsetup;
 StopWatch *nnupdate;
-StopWatch *gravity1;
-StopWatch *sph1;
-StopWatch *kdk1;
+StopWatch *grav;
+StopWatch *sph;
+StopWatch *kdk;
+StopWatch *getrdt;
 /*float rdt(std::vector<particlestructure> &p,std::vector<float3> &a){
 	float dt = 1000.0;
 	for (int i = 0; i < p.size(); i++){
@@ -61,23 +62,34 @@ float reversibletimestep(std::vector<particlestructure> &p,std::vector<float3> &
 		if(lastacc[i].norm() > maxa) maxa = lastacc[i].norm();
 	}
 
-
+	getrdt->Start();
 	float lastdt = rdt(p,lastacc);
+	getrdt->Stop();
 
+	kdk->Start();
 	kick(p,lastacc,lastdt/2);
 	drift(p,lastdt);
+	kdk->Stop();
+
+	ctsetup->Start();
 	setupCoverTree(p,sq(40*rad));
+	ctsetup->Stop();
+
+	nnupdate->Start();
 	updateNN(p);
+	nnupdate->Stop();
+
 	//if(doaccretion(p)){
 //		std::cout<<"\nAccreted\n\n";
 //		destroyCoverTree();
 //		setupCoverTree(p,sq(40*rad));
 //		updateNN(p);
 //	}
+	sph->Start();
 	for(int i = 0; i < np; i++){
 		acc[i] = accel(p[i]);
 	}
-
+	sph->Stop();
 
 	for(int i = 0; i < np; i++){
 		if (p[i].h < minh) minh = p[i].h;
@@ -85,21 +97,26 @@ float reversibletimestep(std::vector<particlestructure> &p,std::vector<float3> &
 
 	float fs = minh/(NSMOOTH *5);
 
+	grav->Start();
 	cudaGrav(p,acc,fs);
+	grav->Stop();
 
 	for(int i = 0; i < np; i++){
 		if(acc[i].norm() > maxa) maxa = acc[i].norm();
 	}
+	getrdt->Start();
 	float dt1 = rdt(p,acc);
-
+	getrdt->Stop();
 	float dt = .5*(lastdt+dt1);
 
 	float delt = dt1-lastdt;
+	kdk->Start();
 	kick(p,lastacc,dt/2);
 	drift(p,delt/2);
 
 	kick(p,lastacc,-lastdt/2);
 	kick(p,acc,dt/2);
+	kdk->Stop();
 	lastacc = acc;
 	lastfs = fs;
 	destroyCoverTree();

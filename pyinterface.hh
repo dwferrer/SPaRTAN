@@ -224,13 +224,27 @@ float domicro(std::vector<particlestructure> *ps,float *dt){
 }
 
 float rts(std::vector<particlestructure> *ps,bool first, bool last, float3 * lastacc, float * lfs ){//reversible time step
+	ctsetup = new StopWatch("ctsetup");
+	nnupdate = new StopWatch("nnupdate");
+	grav = new StopWatch("cudagrav");
+	sph = new StopWatch("sph");
+	kdk = new StopWatch("kdk");
+	getrdt = new StopWatch("rdt");
 	std::vector<float3> la;
 	la.resize(ps->size());
-	#pragma omp parallel for schedule(dynamic,1)
+#pragma omp parallel for schedule(dynamic,1)
 	for(int i = 0; i<ps->size(); i++){
 		la[i] = lastacc[i];
 	}
-	return reversibletimestep(*ps,la, *lfs, first,last);
+
+	float result = reversibletimestep(*ps,la, *lfs, first,last);
+	delete ctsetup;
+	delete nnupdate;
+	delete grav;
+	delete sph;
+	delete kdk;
+	delete getrdt;
+	return result;
 }
 }
 
