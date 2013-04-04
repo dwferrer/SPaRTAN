@@ -11,8 +11,11 @@
 
 float rdt(std::vector<particlestructure> &p,std::vector<float3> &a){
         float dt = 1000.0;
+#pragma omp parallel for schedule(dynamic,1000)
         for (int i = 0; i < p.size(); i++){
-                float dti = .3 * smoothingLength(p[i]) /(cs(p[i]) + sqrt(a[i].norm()*smoothingLength(p[i])));
+        		float temp = density(p[i]);
+        		float hi = smoothingLength(p[i])
+                float dti = .3 * hi /(cs(p[i]) + sqrt(a[i].norm()*hi));
                 if (dt >= dti) dt = dti;
         }
         return dt;
