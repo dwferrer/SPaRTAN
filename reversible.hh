@@ -9,11 +9,11 @@
 #define REVERSIBLE_HH_
 
 #include "StopWatch.cc"
-StopWatch ctsetup;
-StopWatch nnupdate;
-StopWatch gravity1;
-StopWatch sph1;
-StopWatch kdk1;
+StopWatch *ctsetup;
+StopWatch *nnupdate;
+StopWatch *gravity1;
+StopWatch *sph1;
+StopWatch *kdk1;
 /*float rdt(std::vector<particlestructure> &p,std::vector<float3> &a){
 	float dt = 1000.0;
 	for (int i = 0; i < p.size(); i++){
