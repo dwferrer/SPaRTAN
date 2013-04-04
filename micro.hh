@@ -44,9 +44,7 @@ void microGrav(std::vector<particlestructure *>  &p1, std::vector<particlestruct
 				assert(rij ==rij);
 
 				acc[p1[i]->address] += -G *p2[j].mass * (pow(sq(rij)+sq(fs),-3.0/2.0)) * xij;
-				if((acc[p1[i]->address] == acc[p1[i]->address])){
-
-				} else{
+				if(!(acc[p1[i]->address] == acc[p1[i]->address])){
 					std::cout<<"address: "<<p1[i]->address<<"\n";
 					std::cout<<"rij: "<<rij<<"\n";
 					std::cout<<"xij: "<<xij<<"\n";
@@ -250,8 +248,8 @@ float microstep(std::vector<particlestructure> &p,float &lastdt){
 		assert(p[i].h >0);
 		if (p[i].h < minh) minh = p[i].h;
 	}
-	if(minh < FS) minh = FS;
-	float fs = minh/(NSMOOTH);
+//	if(minh < FS) minh = FS;
+	float fs = 2*minh/(NSMOOTH);
 	assert(fs == fs);
 
 	directGrav(p,acc,fs);
@@ -340,7 +338,7 @@ float microstep(std::vector<particlestructure> &p,float &lastdt){
 					for (int ix = 0; ix < levellists.size(); ix++) std::cout<<"Level "<<ix<<": "<<levellists[ix].size()<<"\n";
 					//we need to remove the particles from the covertree since they are about to change
 					std::cout<<"Changing covertree\n";
-					//for( int j = 0; j <levellists[l].size(); j++) particlecovertree->remove(*levellists[l][j]);
+					for( int j = 0; j <levellists[l].size(); j++) particlecovertree->remove(*levellists[l][j]);
 
 
 					for( int j = 0; j <levellists[l].size(); j++) {
@@ -353,8 +351,8 @@ float microstep(std::vector<particlestructure> &p,float &lastdt){
 					microdrift(levellists[l],ldt);
 //					microupdateT(levellists[l],dT,ldt);
 					std::cout<<"unlceaning\n";
-//					#pragma omp parallel for schedule(dynamic,1)
-					//for(int j = 0; j <p.size(); j++) p[i].clean = false;
+					#pragma omp parallel for schedule(dynamic,1)
+					for(int j = 0; j <p.size(); j++) p[i].clean = false;
 					std::cout<<"re-adding to covertree\n";
 					//re-add the particles to the covertree
 					for( int j = 0; j <levellists[l].size(); j++) particlecovertree->insert(*levellists[l][j]);

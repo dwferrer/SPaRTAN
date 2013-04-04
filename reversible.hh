@@ -62,12 +62,12 @@ float reversibletimestep(std::vector<particlestructure> &p,std::vector<float3> &
 	drift(p,lastdt);
 	setupCoverTree(p,sq(40*rad));
 	updateNN(p);
-	if(doaccretion(p)){
-		std::cout<<"\nAccreted\n\n";
-		destroyCoverTree();
-		setupCoverTree(p,sq(40*rad));
-		updateNN(p);
-	}
+	//if(doaccretion(p)){
+//		std::cout<<"\nAccreted\n\n";
+//		destroyCoverTree();
+//		setupCoverTree(p,sq(40*rad));
+//		updateNN(p);
+//	}
 	for(int i = 0; i < np; i++){
 		acc[i] = accel(p[i]);
 	}

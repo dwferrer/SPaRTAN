@@ -18,7 +18,7 @@
 //get the gravitational force on each particle via the direct double sum. Set cfs to be non zero to force a global softening length.
 //level is the maximum micro-stepping  level that the calculation should be done for. This is currently always less than 10, so omitting this
 //argument will do the calculation for every particle in p
-//TODO: Write this using trees or move to the GPU
+//TODO: Write this using trees
 void directGrav(std::vector<particlestructure> &p, std::vector<float3> &acc,float cfs = 0){
 	assert(p.size() == acc.size());
 #pragma omp parallel for schedule(dynamic, 1)
@@ -32,21 +32,44 @@ void directGrav(std::vector<particlestructure> &p, std::vector<float3> &acc,floa
 				float rij = xij.norm2();
 				float ex = (float)(-3.0/2.0);
 				acc[i] += -G *p[j].mass * (std::pow(rij+sq(fs),ex)) * xij;
-				/*if (acc[i].x >10000000){
-					std::cout<<"h:"<<fs<<"\n";
-					std::cout<<"j: "<<j<<"\n";
-					std::cout<<"pos i: "<<p[i].position<<"\n";
-					std::cout<<"pos j: "<<p[j].position<<"\n";
-					std::cout<<"xij: "<<xij<<"\n";
-					std::cout<<"id i"<<p[i].id<<"\n";
-					std::cout<<"id j"<<p[j].id<<"\n";
-					assert(1==0);
-				}*/
 			}
 			assert(acc[i]==acc[i]); //check for NaNs
 		}
 	}
 }
 
+void gpugravity(float * pos, float *accel, long long int N); //provided by gravity.cu
 
+void cudaGrav(std::vector<particlestructure> &p, std::vector<float3> &acc,float cfs = 0){
+
+	long long  int np = p.size();
+	//first we need to copy the particles into good cuda order
+	float * pos = new float[np*4];
+	float *a = new float[np*4];
+
+	#pragma omp parallel for schedule(dynamic,1)
+	for(int i = 0; i < np; i++){
+		pos[4*i + 0] = p[i].position.x;
+		pos[4*i + 1] = p[i].position.y;
+		pos[4*i + 2] = p[i].position.z;
+		pos[4*i + 3] = p[i].h;
+		a[4*i +0] = acc[i].x;
+		a[4*i +1] = acc[i].y;
+		a[4*i +2] = acc[i].z;
+		a[4*i +3] = 0.0;
+	}
+
+	gpugravity(pos,a,np);
+
+#pragma omp parallel for schedule(dynamic,1)
+	for(int i = 0; i < np; i++){
+		acc[i].x = a[4*i +0];
+		acc[i].y = a[4*i +1];
+		acc[i].z = a[4*i +2];
+	}
+
+
+
+
+}
 #endif /* GRAVITY_HH_ */
