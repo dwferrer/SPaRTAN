@@ -107,6 +107,7 @@ float reversibletimestep(std::vector<particlestructure> &p,std::vector<float3> &
 	getrdt->Start();
 	float dt1 = rdt(p,acc);
 	getrdt->Stop();
+
 	float dt = .5*(lastdt+dt1);
 
 	float delt = dt1-lastdt;
