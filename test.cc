@@ -82,7 +82,6 @@ void testDirect(){
 	runtime.Stop();
 	std::cout<<"\nCuda Run time: "<<runtime.Elapsed()<<" s\n";
 	std::cout<<"Rate: "<< (double)(size*size)/(pow(10,9)*runtime.Elapsed())<<" Gdirect/s \n\n";
-	return;
 	runtime.Clear();
 	runtime.Start();
         std::vector<float3> acc2;
@@ -125,6 +124,7 @@ void testTimeStep(){
 }
 
 void testrTimeStep(){
+	int steps = 10;
 	std::cout<<"\n...Starting Single Timestep Test...\n";
 	long int size = cube(60);
 	std::vector<particlestructure> particles;
@@ -138,10 +138,11 @@ void testrTimeStep(){
 	float fs =0;
 	runtime.Start();
 	float dt  = reversibletimestep(particles,a,fs,true,false);
+	for(int i = 0; i < steps -1; i++) reversibletimestep(particles,a,fs,false,false);
 	runtime.Stop();
 	std::cout<<"dt: "<<dt<<"\n";
 	std::cout<<"\nRun time: "<<runtime.Elapsed()<<" s\n";
-	std::cout<<"Rate: "<< (double)(count)/(runtime.Elapsed())<<" particle/s \n\n";
+	std::cout<<"Rate: "<< steps *(double)(count)/(runtime.Elapsed())<<" particle/s \n\n";
 	std::cout<<"...............Passed Single Time Step Test................\n";
 
 }
@@ -203,8 +204,8 @@ void pythonTest(){
 int main(){
 	feenableexcept(FE_INVALID | FE_DIVBYZERO);
 	//testCoverTree();
-	testDirect();
-	//testrTimeStep();
+	//testDirect();
+	testrTimeStep();
 	//pythonTest();
 
 	//testMicro();
