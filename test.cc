@@ -162,6 +162,12 @@ void testrTimeStep(){
 	delete getrdt;
 }
 
+void testgetrdt()
+{
+
+}
+
+
 void testMicro(){
 	std::cout<<"\n...Starting Microstep Test...\n";
 	long int size = cube(n1d);
