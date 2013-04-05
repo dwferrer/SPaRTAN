@@ -229,8 +229,8 @@ bool RunMedianTest()
 		if (g_app.profile)
 		{
 			// Start Timer
-			skdResetTimer( g_app.hTimer );
-			skdStartTimer( g_app.hTimer );
+			sdkResetTimer( g_app.hTimer );
+			sdkStartTimer( g_app.hTimer );
 		}
 
 		// Copy 'Points' vector from host memory to device memory
@@ -242,18 +242,18 @@ bool RunMedianTest()
 		if (g_app.profile)
 		{
 			// Stop Timer and save performance measurement
-			skdStopTimer( g_app.hTimer );
+			sdkStopTimer( g_app.hTimer );
 			
 			if (g_app.profileSkipFirstLast)
 			{
 				if ((1 < currIter) && (currIter <= g_app.profileActualLoops))
 				{
-					MED_PNT_onto_device += skdGetTimerValue( g_app.hTimer );
+					MED_PNT_onto_device += sdkGetTimerValue( g_app.hTimer );
 				}
 			}
 			else
 			{
-				MED_PNT_onto_device += skdGetTimerValue( g_app.hTimer );
+				MED_PNT_onto_device += sdkGetTimerValue( g_app.hTimer );
 			}
 		}
 
@@ -265,8 +265,8 @@ bool RunMedianTest()
 		if (g_app.profile)
 		{
 			// Start Timer
-			skdResetTimer( g_app.hTimer );
-			skdStartTimer( g_app.hTimer );
+			sdkResetTimer( g_app.hTimer );
+			sdkStartTimer( g_app.hTimer );
 		}
 		
 		// Excute the Brute Force Distance Kernel
@@ -284,17 +284,17 @@ bool RunMedianTest()
 		if (g_app.profile)
 		{
 			// Stop Timer and save performance measurement
-			skdStopTimer( g_app.hTimer );
+			sdkStopTimer( g_app.hTimer );
 			if (g_app.profileSkipFirstLast)
 			{
 				if ((1 < currIter) && (currIter <= g_app.profileActualLoops))
 				{
-					MED_GPU_Kernel += skdGetTimerValue( g_app.hTimer );
+					MED_GPU_Kernel += sdkGetTimerValue( g_app.hTimer );
 				}
 			}
 			else
 			{
-				MED_GPU_Kernel += skdGetTimerValue( g_app.hTimer );
+				MED_GPU_Kernel += sdkGetTimerValue( g_app.hTimer );
 			}
 		}
 
@@ -310,8 +310,8 @@ bool RunMedianTest()
 			if (g_app.profile)
 			{
 				// Start Timer
-				skdResetTimer( g_app.hTimer );
-				skdStartTimer( g_app.hTimer );
+				sdkResetTimer( g_app.hTimer );
+				sdkStartTimer( g_app.hTimer );
 			}
 
 			// copy result vector from device to host
@@ -323,17 +323,17 @@ bool RunMedianTest()
 			if (g_app.profile)
 			{
 				// Stop Timer and save performance measurement
-				skdStopTimer( g_app.hTimer );
+				sdkStopTimer( g_app.hTimer );
 				if (g_app.profileSkipFirstLast)
 				{
 					if ((1 < currIter) && (currIter <= g_app.profileActualLoops))
 					{
-						MED_PNT_from_device += skdGetTimerValue( g_app.hTimer );
+						MED_PNT_from_device += sdkGetTimerValue( g_app.hTimer );
 					}
 				}
 				else
 				{
-					MED_PNT_from_device += skdGetTimerValue( g_app.hTimer );
+					MED_PNT_from_device += sdkGetTimerValue( g_app.hTimer );
 				}
 			}
 		}
@@ -349,8 +349,8 @@ bool RunMedianTest()
 			if (g_app.profile)
 			{
 				// Start Timer
-				skdResetTimer( g_app.hTimer );
-				skdStartTimer( g_app.hTimer );
+				sdkResetTimer( g_app.hTimer );
+				sdkStartTimer( g_app.hTimer );
 			}
 
 			// Compute reference solution (distances) on CPU
@@ -359,17 +359,17 @@ bool RunMedianTest()
 			if (g_app.profile)
 			{
 				// Stop Timer and save performance measurement
-				skdStopTimer( g_app.hTimer );
+				sdkStopTimer( g_app.hTimer );
 				if (g_app.profileSkipFirstLast)
 				{
 					if ((1 < currIter) && (currIter <= g_app.profileActualLoops))
 					{
-						MED_CPU_Kernel += skdGetTimerValue( g_app.hTimer );
+						MED_CPU_Kernel += sdkGetTimerValue( g_app.hTimer );
 					}
 				}
 				else
 				{
-					MED_CPU_Kernel += skdGetTimerValue( g_app.hTimer );
+					MED_CPU_Kernel += sdkGetTimerValue( g_app.hTimer );
 				}
 			}
 
@@ -402,8 +402,8 @@ bool RunMedianTest()
 		if (g_app.profile)
 		{
 			// Start Timer
-			skdResetTimer( g_app.hTimer );
-			skdStartTimer( g_app.hTimer );
+			sdkResetTimer( g_app.hTimer );
+			sdkStartTimer( g_app.hTimer );
 		}
 
 		// Copy 'Distances' vector to 'Reduction' vector 
@@ -505,17 +505,17 @@ bool RunMedianTest()
 		if (g_app.profile)
 		{
 			// Stop Timer and save performance measurement
-			skdStopTimer( g_app.hTimer );
+			sdkStopTimer( g_app.hTimer );
 			if (g_app.profileSkipFirstLast)
 			{
 				if ((1 < currIter) && (currIter <= g_app.profileActualLoops))
 				{
-					BF_GPU_min += skdGetTimerValue( g_app.hTimer );
+					BF_GPU_min += sdkGetTimerValue( g_app.hTimer );
 				}
 			}
 			else
 			{
-				BF_GPU_min += skdGetTimerValue( g_app.hTimer );
+				BF_GPU_min += sdkGetTimerValue( g_app.hTimer );
 			}
 		}
 
@@ -527,8 +527,8 @@ bool RunMedianTest()
 		if (g_app.profile)
 		{
 			// Start Timer
-			skdResetTimer( g_app.hTimer );
-			skdStartTimer( g_app.hTimer );
+			sdkResetTimer( g_app.hTimer );
+			sdkStartTimer( g_app.hTimer );
 		}
 
 		// Copy closest point result from device to host memory (singleton distance & index)
@@ -550,17 +550,17 @@ bool RunMedianTest()
 		if (g_app.profile)
 		{
 			// Stop Timer and save performance measurement
-			skdStopTimer( g_app.hTimer );
+			sdkStopTimer( g_app.hTimer );
 			if (g_app.profileSkipFirstLast)
 			{
 				if ((1 < currIter) && (currIter <= g_app.profileActualLoops))
 				{
-					BF_M_from_device += skdGetTimerValue( g_app.hTimer );
+					BF_M_from_device += sdkGetTimerValue( g_app.hTimer );
 				}
 			}
 			else
 			{
-				BF_M_from_device += skdGetTimerValue( g_app.hTimer );
+				BF_M_from_device += sdkGetTimerValue( g_app.hTimer );
 			}
 		}
 
@@ -580,8 +580,8 @@ bool RunMedianTest()
 			if (g_app.profile)
 			{
 				// Start Timer
-				skdResetTimer( g_app.hTimer );
-				skdStartTimer( g_app.hTimer );
+				sdkResetTimer( g_app.hTimer );
+				sdkStartTimer( g_app.hTimer );
 			}
 
 			// Compute reference solution (distances) on CPU
@@ -590,17 +590,17 @@ bool RunMedianTest()
 			if (g_app.profile)
 			{
 				// Stop Timer and save performance measurement
-				skdStopTimer( g_app.hTimer );
+				sdkStopTimer( g_app.hTimer );
 				if (g_app.profileSkipFirstLast)
 				{
 					if ((1 < currIter) && (currIter <= g_app.profileActualLoops))
 					{
-						BF_CPU_min += skdGetTimerValue( g_app.hTimer );
+						BF_CPU_min += sdkGetTimerValue( g_app.hTimer );
 					}
 				}
 				else
 				{
-					BF_CPU_min += skdGetTimerValue( g_app.hTimer );
+					BF_CPU_min += sdkGetTimerValue( g_app.hTimer );
 				}
 			}
 
@@ -739,7 +739,7 @@ bool RunMedianTest()
     free( h_Dists_CPU );
     free( h_result_GPU );
 
-    skdDeleteTimer( g_app.hTimer );
+    sdkDeleteTimer( g_app.hTimer );
 
     cutilSafeCall( cudaFree( d_Points ) );
     cutilSafeCall( cudaFree( d_Dists ) );

@@ -478,8 +478,8 @@ bool CPUTest_2D_MED( AppGlobals & g )
 	if (g.profile)
 	{
 		// Start Timer
-		skdResetTimer( g.hTimer );
-		skdStartTimer( g.hTimer );
+		sdkResetTimer( g.hTimer );
+		sdkStartTimer( g.hTimer );
 	}
 
 	// Build KDTree (on CPU)
@@ -495,15 +495,15 @@ bool CPUTest_2D_MED( AppGlobals & g )
 	if (g.profile)
 	{
 		// Stop Timer and save performance measurement
-		skdStopTimer( g.hTimer );
-		KD_CPU_build += skdGetTimerValue( g.hTimer );
+		sdkStopTimer( g.hTimer );
+		KD_CPU_build += sdkGetTimerValue( g.hTimer );
 	}
 
 	if (g.profile)
 	{
 		// Start Timer
-		skdResetTimer( g.hTimer );
-		skdStartTimer( g.hTimer );
+		sdkResetTimer( g.hTimer );
+		sdkStartTimer( g.hTimer );
 	}
 
 	// Copy kd-tree from CPU to GPU
@@ -518,8 +518,8 @@ bool CPUTest_2D_MED( AppGlobals & g )
 	if (g.profile)
 	{
 		// Stop Timer and save performance measurement
-		skdStopTimer( g.hTimer );
-		KD_GPU_copy_nodes += skdGetTimerValue( g.hTimer );
+		sdkStopTimer( g.hTimer );
+		KD_GPU_copy_nodes += sdkGetTimerValue( g.hTimer );
 	}
 
 
@@ -694,8 +694,8 @@ for (currIter = 0; currIter < g.profileActualLoops; currIter++)
 		if (g.profile)
 		{
 			// Start Timer
-			skdResetTimer( g.hTimer );
-			skdStartTimer( g.hTimer );
+			sdkResetTimer( g.hTimer );
+			sdkStartTimer( g.hTimer );
 		}
 
 		// Determine Nearest Neighbors using KDTree
@@ -755,17 +755,17 @@ for (currIter = 0; currIter < g.profileActualLoops; currIter++)
 		if (g.profile)
 		{
 			// Stop Timer and save performance measurement
-			skdStopTimer( g.hTimer );
+			sdkStopTimer( g.hTimer );
 			if (g.profileSkipFirstLast)
 			{
 				if ((1 < currIter) && (currIter <= g.profileActualLoops))
 				{
-					KD_CPU_dist += skdGetTimerValue( g.hTimer );
+					KD_CPU_dist += sdkGetTimerValue( g.hTimer );
 				}
 			}
 			else
 			{
-				KD_CPU_dist += skdGetTimerValue( g.hTimer );
+				KD_CPU_dist += sdkGetTimerValue( g.hTimer );
 			}
 		}
 	}
@@ -1008,7 +1008,7 @@ for (currIter = 0; currIter < g.profileActualLoops; currIter++)
 	printf( "Shutting Down...\n" );
 
 	// cleanup CUDA Timer
-	skdDeleteTimer( g.hTimer );
+	sdkDeleteTimer( g.hTimer );
 
 	// clean up allocations
 #if (CUDA_PLATFORM == CUDA_DEVICE)
