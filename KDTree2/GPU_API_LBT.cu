@@ -135,9 +135,9 @@ void InitTimer()
 	{
 		if (g_app.hTimer == 0)
 		{
-			cutCreateTimer( &(g_app.hTimer) );
-			cutStartTimer( g_app.hTimer );
-			cutStopTimer( g_app.hTimer );
+			sdkCreateTimer( &(g_app.hTimer) );
+			skdStartTimer( g_app.hTimer );
+			skdStopTimer( g_app.hTimer );
 		}	
 
 		// Compute Base Timer Cost
@@ -147,12 +147,12 @@ void InitTimer()
 		for (idx = 0; idx < 100; idx++)
 		{
 			// Start Timer
-			cutResetTimer( g_app.hTimer );
-			cutStartTimer( g_app.hTimer );
+			skdResetTimer( g_app.hTimer );
+			skdStartTimer( g_app.hTimer );
 
 			// Stop Timer and save performance measurement
-			cutStopTimer( g_app.hTimer );
-			elapsedTime = cutGetTimerValue( g_app.hTimer );
+			skdStopTimer( g_app.hTimer );
+			elapsedTime = skdGetTimerValue( g_app.hTimer );
 
 			totalTime += (double)elapsedTime;
 		}
@@ -215,7 +215,7 @@ void FiniTimer()
 	// Cleanup timer
 	if (g_app.hTimer != 0)
 	{
-		cutDeleteTimer( g_app.hTimer );
+		skdDeleteTimer( g_app.hTimer );
 		g_app.hTimer = 0;
 	}
 
@@ -1634,8 +1634,8 @@ bool BuildKDTree_GPU
 	if (g_app.profile)
 	{
 		// Start Timer
-		cutResetTimer( g_app.hTimer );
-		cutStartTimer( g_app.hTimer );
+		skdResetTimer( g_app.hTimer );
+		skdStartTimer( g_app.hTimer );
 	}
 
 	switch (params.nDims)
@@ -1664,8 +1664,8 @@ bool BuildKDTree_GPU
 	if (g_app.profile)
 	{
 		// Stop Timer and save performance measurement
-		cutStopTimer( g_app.hTimer );
-		KD_GPU_build += cutGetTimerValue( g_app.hTimer );
+		skdStopTimer( g_app.hTimer );
+		KD_GPU_build += skdGetTimerValue( g_app.hTimer );
 	}
 
 	// Dump Build Time
@@ -1695,8 +1695,8 @@ bool BuildKDTree_CPU
 	if (g_app.profile)
 	{
 		// Start Timer
-		cutResetTimer( g_app.hTimer );
-		cutStartTimer( g_app.hTimer );
+		skdResetTimer( g_app.hTimer );
+		skdStartTimer( g_app.hTimer );
 	}
 
 	switch (params.nDims)
@@ -1725,8 +1725,8 @@ bool BuildKDTree_CPU
 	if (g_app.profile)
 	{
 		// Stop Timer and save performance measurement
-		cutStopTimer( g_app.hTimer );
-		KD_CPU_build += cutGetTimerValue( g_app.hTimer );
+		skdStopTimer( g_app.hTimer );
+		KD_CPU_build += skdGetTimerValue( g_app.hTimer );
 	}
 
 	// Dump Build Time
@@ -1759,8 +1759,8 @@ bool CopyNodes
 	if (g_app.profile)
 	{
 		// Start Timer
-		cutResetTimer( g_app.hTimer );
-		cutStartTimer( g_app.hTimer );
+		skdResetTimer( g_app.hTimer );
+		skdStartTimer( g_app.hTimer );
 	}
 
 
@@ -1794,8 +1794,8 @@ bool CopyNodes
 	if (g_app.profile)
 	{
 		// Stop Timer and save performance measurement
-		cutStopTimer( g_app.hTimer );
-		KD_copy_nodes += cutGetTimerValue( g_app.hTimer );
+		skdStopTimer( g_app.hTimer );
+		KD_copy_nodes += skdGetTimerValue( g_app.hTimer );
 	}
 
 
@@ -2831,8 +2831,8 @@ bool CallCPUKernel
 		if (g_app.profile)
 		{
 			// Start Timer
-			cutResetTimer( g_app.hTimer );
-			cutStartTimer( g_app.hTimer );
+			skdResetTimer( g_app.hTimer );
+			skdStartTimer( g_app.hTimer );
 		}
 
 		// Determine Nearest Neighbors using KDTree
@@ -3044,17 +3044,17 @@ bool CallCPUKernel
 		if (g_app.profile)
 		{
 			// Stop Timer and save performance measurement
-			cutStopTimer( g_app.hTimer );
+			skdStopTimer( g_app.hTimer );
 			if (g_app.profileSkipFirstLast)
 			{
 				if ((1 < currIter) && (currIter <= g_app.profileActualLoops))
 				{
-					KD_CPU_kernel += cutGetTimerValue( g_app.hTimer );
+					KD_CPU_kernel += skdGetTimerValue( g_app.hTimer );
 				}
 			}
 			else
 			{
-				KD_CPU_kernel += cutGetTimerValue( g_app.hTimer );
+				KD_CPU_kernel += skdGetTimerValue( g_app.hTimer );
 			}
 		}
 

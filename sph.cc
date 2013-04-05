@@ -12,11 +12,11 @@
 #include "threevector.hh"
 #include "particlestructure.h"
 
-#include "Cover_Tree.h"
+//#include "Cover_Tree.h"
 #include "StopWatch.cc"
 #include <math.h>
 #include <fenv.h>
-
+#include <Cover_Tree.h>
 
 #define pi 3.14159265
 
