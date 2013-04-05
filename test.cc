@@ -56,7 +56,7 @@ void testCoverTree(){
 
 void testDirect(){
 	std::cout<<"\n...Starting Direct Gravity Test...\n";
-	long int size = 2<<15;
+	long int size = 500000;//113078;
 	std::vector<particlestructure> particles;
 	particles.resize(size);
 	std::cout<<"Size: "<<size<<"\n";
@@ -78,10 +78,26 @@ void testDirect(){
 	runtime.Start();
 	std::vector<float3> acc;
 	acc.resize(size);
-	directGrav(particles,acc);
+	cudaGrav(particles,acc,.0001);
 	runtime.Stop();
-	std::cout<<"\nRun time: "<<runtime.Elapsed()<<" s\n";
+	std::cout<<"\nCuda Run time: "<<runtime.Elapsed()<<" s\n";
 	std::cout<<"Rate: "<< (double)(size*size)/(pow(10,9)*runtime.Elapsed())<<" Gdirect/s \n\n";
+	return;
+	runtime.Clear();
+	runtime.Start();
+        std::vector<float3> acc2;
+        acc2.resize(size);
+        directGrav(particles,acc2,.0001);
+        runtime.Stop();
+        std::cout<<"\nCPU Run time: "<<runtime.Elapsed()<<" s\n";
+        std::cout<<"Rate: "<< (double)(size*size)/(pow(10,9)*runtime.Elapsed())<<" Gdirect/s \n\n";
+
+	for(int i = 0; i <size; i++){
+		if( (acc[i]-acc2[i]).norm() >= 1e-5){
+			printf("Error! Particle %d has cudaAcc: (%f,%f,%f) and cpuAcc: (%f,%f,%f) which differ by: %f. \n",i,acc[i].x,acc[i].y,acc[i].z,acc2[i].x,acc2[i].y,acc2[i].z, (acc[i]-acc2[i]).norm());
+			assert((acc[i]-acc2[i]).norm() < 1e-5);
+		}
+	}
 	std::cout<<"...............Passed Direct Test................\n";
 
 
@@ -110,12 +126,12 @@ void testTimeStep(){
 
 void testrTimeStep(){
 	std::cout<<"\n...Starting Single Timestep Test...\n";
-	long int size = cube(25);
+	long int size = cube(60);
 	std::vector<particlestructure> particles;
 	particles.reserve(size);
 	std::cout<<"Size: "<<size<<"\n";
 
-	int count = makeHomogeneousSphere(particles,25,rad);
+	int count = makeHomogeneousSphere(particles,60,rad);
 	std::cout<<"Sphere count: "<<count<<"\n";
 	StopWatch runtime("Single Timestep");
 	std::vector<float3> a(count,(float3)(0,0,0));
@@ -187,10 +203,11 @@ void pythonTest(){
 int main(){
 	feenableexcept(FE_INVALID | FE_DIVBYZERO);
 	//testCoverTree();
-	//testDirect();
+	testDirect();
+	//testrTimeStep();
 	//pythonTest();
 
-	testMicro();
+	//testMicro();
 
 	return 0;
 

@@ -79,7 +79,7 @@ float reversibletimestep(std::vector<particlestructure> &p,std::vector<float3> &
 
 	float fs = minh/(NSMOOTH *5);
 
-	directGrav(p,acc,fs);
+	cudaGrav(p,acc,fs);
 
 	for(int i = 0; i < np; i++){
 		if(acc[i].norm() > maxa) maxa = acc[i].norm();

@@ -2,7 +2,7 @@
 #include <gsl/gsl_rng.h>
 
 //shamelessly stolen from cuda gems nbody code
-#define EPS2 .0001
+#define EPS2 0.00000001
 #define NThreads 1024
 __device__ float3
 bodyBodyInteraction(float4 bi, float4 bj, float3 ai)
@@ -79,19 +79,6 @@ calculate_forces(void *devX, void *devA,long long int N)
         globalA[gtid] = acc4;
 }
 
-gsl_rng *  gsl_setup(){
-        const gsl_rng_type * T;
-        gsl_rng * r;
-
-        gsl_rng_env_setup();
-
-        T = gsl_rng_default; //The mersene twister
-        r = gsl_rng_alloc (T);
-        gsl_rng_set(r,time(0));
-        return r;
-}
-
-
 
 void gpugravity(float * pos, float *accel, long long int N){
         float4 *positions = (float4 *) pos;
@@ -111,9 +98,4 @@ void gpugravity(float * pos, float *accel, long long int N){
 
         calculate_forces<<<(N+NThreads-1)/NThreads,NThreads,NThreads*sizeof(float4)>>>(d_pos,d_acc,N);
         cudaMemcpy(acc,d_acc,size,cudaMemcpyDeviceToHost);
-        free(acc); cudaFree(d_acc);
-        free(positions); cudaFree(d_pos);
-        gsl_rng_free(r);
-
-
 }
