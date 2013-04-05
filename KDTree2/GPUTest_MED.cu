@@ -315,7 +315,7 @@ bool CPUTest_2D_MED( AppGlobals & g )
 	GPUNode_2D_MED* d_KDNodes = NULL;
 	if (mem_size_KDNodes > 0)
 	{
-		cutilSafeCall( cudaMalloc( (void **) &d_KDNodes, mem_size_KDNodes ) );
+		checkCudaErrors( cudaMalloc( (void **) &d_KDNodes, mem_size_KDNodes ) );
 	}
 
 
@@ -350,7 +350,7 @@ bool CPUTest_2D_MED( AppGlobals & g )
 	unsigned int* d_IDs = NULL;
 	if (mem_size_IDs > 0)
 	{
-		cutilSafeCall( cudaMalloc( (void **) &d_IDs, mem_size_IDs ) );
+		checkCudaErrors( cudaMalloc( (void **) &d_IDs, mem_size_IDs ) );
 	}
 
 
@@ -385,7 +385,7 @@ bool CPUTest_2D_MED( AppGlobals & g )
 	float2* d_Queries = NULL;
 	if (mem_size_Query > 0)
 	{
-		cutilSafeCall( cudaMalloc( (void **) &d_Queries, mem_size_Query ) );
+		checkCudaErrors( cudaMalloc( (void **) &d_Queries, mem_size_Query ) );
 	}
 
 	// Allocate host memory for GPU Query Results
@@ -434,7 +434,7 @@ bool CPUTest_2D_MED( AppGlobals & g )
 	GPU_NN_Result* d_Results_GPU = NULL;
 	if (mem_size_Results_GPU > 0)
 	{
-		cutilSafeCall( cudaMalloc( (void **) &d_Results_GPU, mem_size_Results_GPU ) );
+		checkCudaErrors( cudaMalloc( (void **) &d_Results_GPU, mem_size_Results_GPU ) );
 	}
 
 
@@ -547,13 +547,13 @@ for (currIter = 0; currIter < g.profileActualLoops; currIter++)
 	}
 
 	// Copy 'KDNodes' vector from host memory to device memory
-	cutilSafeCall( cudaMemcpy( d_KDNodes, h_KDNodes, mem_size_KDNodes, cudaMemcpyHostToDevice ) );
+	checkCudaErrors( cudaMemcpy( d_KDNodes, h_KDNodes, mem_size_KDNodes, cudaMemcpyHostToDevice ) );
 
 	// Copy 'IDs' vector from host memory to device memory
-	cutilSafeCall( cudaMemcpy( d_IDs, h_IDs, mem_size_IDs, cudaMemcpyHostToDevice ) );
+	checkCudaErrors( cudaMemcpy( d_IDs, h_IDs, mem_size_IDs, cudaMemcpyHostToDevice ) );
 
 	// Copy 'Query Points' vector from host memory to device memory
-	cutilSafeCall( cudaMemcpy( d_Queries, h_Queries, mem_size_Query, cudaMemcpyHostToDevice ) );
+	checkCudaErrors( cudaMemcpy( d_Queries, h_Queries, mem_size_Query, cudaMemcpyHostToDevice ) );
 
 	if (g.profile)
 	{
@@ -663,7 +663,7 @@ for (currIter = 0; currIter < g.profileActualLoops; currIter++)
 	}
 
 	// copy result vector Z from device to host
-	cutilSafeCall( cudaMemcpy( (void *) h_Results_GPU, d_Results_GPU, mem_size_Results_GPU, cudaMemcpyDeviceToHost ) );
+	checkCudaErrors( cudaMemcpy( (void *) h_Results_GPU, d_Results_GPU, mem_size_Results_GPU, cudaMemcpyDeviceToHost ) );
 
 	if (g.profile)
 	{
@@ -1038,19 +1038,19 @@ for (currIter = 0; currIter < g.profileActualLoops; currIter++)
 
 	if (NULL != d_KDNodes)
 	{
-		cutilSafeCall( cudaFree( d_KDNodes ) );
+		checkCudaErrors( cudaFree( d_KDNodes ) );
 	}
 	if (NULL != d_IDs)
 	{
-		cutilSafeCall( cudaFree( d_IDs ) );
+		checkCudaErrors( cudaFree( d_IDs ) );
 	}
 	if (NULL != d_Queries)
 	{
-		cutilSafeCall( cudaFree( d_Queries ) );
+		checkCudaErrors( cudaFree( d_Queries ) );
 	}
 	if (NULL != d_Results_GPU)
 	{
-		cutilSafeCall( cudaFree( d_Results_GPU ) );
+		checkCudaErrors( cudaFree( d_Results_GPU ) );
 	}
 
 	FINI_CPU_2D_MEDIAN( &kdTree );

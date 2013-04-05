@@ -1285,36 +1285,36 @@ bool Host_Build2D( HostDeviceParams & params )
 
 	// Cleanup temporary Memory Resources
 	FreeHostMemory( h_Starts, params.bPinned );
-	cutilSafeCall( cudaFree( d_Starts ) );
+	checkCudaErrors( cudaFree( d_Starts ) );
 
 	FreeHostMemory( h_Counts, params.bPinned );
-	cutilSafeCall( cudaFree( d_Counts ) );
+	checkCudaErrors( cudaFree( d_Counts ) );
 
 #ifdef _BUILD_STATS
 	if (NULL != h_StatsQ)   { free( h_StatsQ ); h_StatsQ = NULL; }
-	cutilSafeCall( cudaFree( d_StatsQ ) );
+	checkCudaErrors( cudaFree( d_StatsQ ) );
 #endif
 
 	if (NULL != h_BuildQ)   { free( h_BuildQ ); h_BuildQ = NULL; }
 	if (NULL != h_ScratchQ) { free( h_ScratchQ ); h_ScratchQ = NULL; }
-	cutilSafeCall( cudaFree( d_BuildQ ) );
+	checkCudaErrors( cudaFree( d_BuildQ ) );
 
 	//FreeHostMemory( h_Scratch, params.bPinned );
-	cutilSafeCall( cudaFree( d_Scratch ) );
+	checkCudaErrors( cudaFree( d_Scratch ) );
 
 	FreeHostMemory( h_NodesMED, params.bPinned );
-	cutilSafeCall( cudaFree( d_NodesMED ) );
+	checkCudaErrors( cudaFree( d_NodesMED ) );
 
 	//FreeHostMemory( h_Pivot, params.bPinned );
-	cutilSafeCall( cudaFree( d_Pivot ) );
+	checkCudaErrors( cudaFree( d_Pivot ) );
 
 	// BUGBUG - don't cleanup semi-permanent memory structures now, clean them up later
 
 	//FreeHostMemory( h_NodesLBT, params.bPinned );
-	//cutilSafeCall( cudaFree( d_NodesLBT ) );
+	//checkCudaErrors( cudaFree( d_NodesLBT ) );
 	
 	//FreeHostMemory( h_PointsID, params.bPinned );
-	//cutilSafeCall( cudaFree( d_PointIDs ) );
+	//checkCudaErrors( cudaFree( d_PointIDs ) );
 
 	// Cleanup GPU Device Memory
 
@@ -1348,7 +1348,7 @@ void FiniHostBuild( HostDeviceParams & params )
 
 	if (params.d_Nodes != NULL)
 	{
-		cutilSafeCall( cudaFree( params.d_Nodes ) );
+		checkCudaErrors( cudaFree( params.d_Nodes ) );
 		params.d_Nodes = NULL;
 	}
 
@@ -1358,7 +1358,7 @@ void FiniHostBuild( HostDeviceParams & params )
 
 	if (params.d_IDs != NULL)
 	{
-		cutilSafeCall( cudaFree( params.d_IDs ) );
+		checkCudaErrors( cudaFree( params.d_IDs ) );
 		params.d_IDs = NULL;
 	}
 }

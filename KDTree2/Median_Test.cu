@@ -135,11 +135,11 @@ bool RunMedianTest()
 
 	// allocate device memory for points
 	float4* d_Points;
-	cutilSafeCall( cudaMalloc( (void**) &d_Points, mem_size_Points ) );
+	checkCudaErrors( cudaMalloc( (void**) &d_Points, mem_size_Points ) );
 
 	// allocate device memory for points
 	I32* d_result_GPU;
-	cutilSafeCall( cudaMalloc( (void**) &d_result_GPU, mem_size_Result ) );
+	checkCudaErrors( cudaMalloc( (void**) &d_result_GPU, mem_size_Result ) );
 
 	// allocate device memory for Reduction Vector
 		// Used for reduction
@@ -147,7 +147,7 @@ bool RunMedianTest()
 		// to get final answer
 	//bool bPingPong = true;
 	//float4* d_Reduce;
-	//cutilSafeCall( cudaMalloc( (void **) &d_Reduce, mem_size_Points ) ); 
+	//checkCudaErrors( cudaMalloc( (void **) &d_Reduce, mem_size_Points ) ); 
 
 
 	/*-------------------------------------------
@@ -234,10 +234,10 @@ bool RunMedianTest()
 		}
 
 		// Copy 'Points' vector from host memory to device memory
-		cutilSafeCall( cudaMemcpy( d_Points, h_Points_Orig, mem_size_Points, cudaMemcpyHostToDevice ) );
+		checkCudaErrors( cudaMemcpy( d_Points, h_Points_Orig, mem_size_Points, cudaMemcpyHostToDevice ) );
 
 		// Copy 'Initial' result vector from host memory to device memory
-		cutilSafeCall( cudaMemcpy( d_result_GPU, h_result_GPU, mem_size_Results, cudaMemcpyHostToDevice ) );
+		checkCudaErrors( cudaMemcpy( d_result_GPU, h_result_GPU, mem_size_Results, cudaMemcpyHostToDevice ) );
 
 		if (g_app.profile)
 		{
@@ -315,10 +315,10 @@ bool RunMedianTest()
 			}
 
 			// copy result vector from device to host
-			cutilSafeCall( cudaMemcpy( (void *) h_Points_Results, d_Points, mem_size_Points, cudaMemcpyDeviceToHost ) );
+			checkCudaErrors( cudaMemcpy( (void *) h_Points_Results, d_Points, mem_size_Points, cudaMemcpyDeviceToHost ) );
 
 			// copy singleton median index from device to host
-			cutilSafeCall( cudaMemcpy( (void *) h_results_GPU, d_results_GPU, mem_size_Results, cudaMemcpyDeviceToHost ) );
+			checkCudaErrors( cudaMemcpy( (void *) h_results_GPU, d_results_GPU, mem_size_Results, cudaMemcpyDeviceToHost ) );
 
 			if (g_app.profile)
 			{
@@ -409,7 +409,7 @@ bool RunMedianTest()
 		// Copy 'Distances' vector to 'Reduction' vector 
 			// This is currently necessary to avoid garbage
 			// results in output caused by unitialized values
-		cutilSafeCall( cudaMemcpy( d_Reduce, d_Dists, mem_size_Dists_GPU, cudaMemcpyDeviceToDevice ) );
+		checkCudaErrors( cudaMemcpy( d_Reduce, d_Dists, mem_size_Dists_GPU, cudaMemcpyDeviceToDevice ) );
 
 		int reduceElems  = nPad;
 		dim3 reduceThreads;
@@ -741,9 +741,9 @@ bool RunMedianTest()
 
     sdkDeleteTimer( g_app.hTimer );
 
-    cutilSafeCall( cudaFree( d_Points ) );
-    cutilSafeCall( cudaFree( d_Dists ) );
-    cutilSafeCall( cudaFree( d_Reduce ) );
+    checkCudaErrors( cudaFree( d_Points ) );
+    checkCudaErrors( cudaFree( d_Dists ) );
+    checkCudaErrors( cudaFree( d_Reduce ) );
 
 	printf( "Shutdown done...\n\n" );
 

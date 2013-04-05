@@ -151,11 +151,11 @@ bool BruteForce3DTest()
 
 	// allocate device memory for points (2D vector layout)
 	float4* d_Points;
-	cutilSafeCall( cudaMalloc( (void**) &d_Points, mem_size_Points ) );
+	checkCudaErrors( cudaMalloc( (void**) &d_Points, mem_size_Points ) );
 
 	// allocate device memory for GPU Distances vector
 	float2* d_Dists		= NULL;
-	cutilSafeCall( cudaMalloc( (void **) &d_Dists, mem_size_Dists_GPU ) );
+	checkCudaErrors( cudaMalloc( (void **) &d_Dists, mem_size_Dists_GPU ) );
 
 	// allocate device memory for Reduction Vector
 		// Used for reduction
@@ -163,7 +163,7 @@ bool BruteForce3DTest()
 		// to get final answer
 	bool bPingPong = true;
 	float2* d_Reduce;
-	cutilSafeCall( cudaMalloc( (void **) &d_Reduce, mem_size_Dists_GPU ) ); 
+	checkCudaErrors( cudaMalloc( (void **) &d_Reduce, mem_size_Dists_GPU ) ); 
 
 
 	/*-------------------------------------------
@@ -271,7 +271,7 @@ bool BruteForce3DTest()
 		}
 
 		// Copy 'Points' vector from host memory to device memory
-		cutilSafeCall( cudaMemcpy( d_Points, h_Points, mem_size_Points, cudaMemcpyHostToDevice ) );
+		checkCudaErrors( cudaMemcpy( d_Points, h_Points, mem_size_Points, cudaMemcpyHostToDevice ) );
 
 		if (g_app.profile)
 		{
@@ -349,7 +349,7 @@ bool BruteForce3DTest()
 			}
 
 			// copy result vector Z from device to host
-			cutilSafeCall( cudaMemcpy( (void *) h_Dists_GPU, d_Dists, mem_size_Dists_GPU, cudaMemcpyDeviceToHost ) );
+			checkCudaErrors( cudaMemcpy( (void *) h_Dists_GPU, d_Dists, mem_size_Dists_GPU, cudaMemcpyDeviceToHost ) );
 
 			if (g_app.profile)
 			{
@@ -442,7 +442,7 @@ bool BruteForce3DTest()
 		// Copy 'Distances' vector to 'Reduction' vector 
 			// This is currently necessary to avoid garbage
 			// results in output caused by unitialized values
-		cutilSafeCall( cudaMemcpy( d_Reduce, d_Dists, mem_size_Dists_GPU, cudaMemcpyDeviceToDevice ) );
+		checkCudaErrors( cudaMemcpy( d_Reduce, d_Dists, mem_size_Dists_GPU, cudaMemcpyDeviceToDevice ) );
 
 		int reduceElems  = nPad;
 		dim3 reduceThreads;
@@ -774,9 +774,9 @@ bool BruteForce3DTest()
 
     sdkDeleteTimer( g_app.hTimer );
 
-    cutilSafeCall( cudaFree( d_Points ) );
-    cutilSafeCall( cudaFree( d_Dists ) );
-    cutilSafeCall( cudaFree( d_Reduce ) );
+    checkCudaErrors( cudaFree( d_Points ) );
+    checkCudaErrors( cudaFree( d_Dists ) );
+    checkCudaErrors( cudaFree( d_Reduce ) );
 
 	printf( "Shutdown done...\n\n" );
 

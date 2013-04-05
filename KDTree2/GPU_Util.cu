@@ -67,7 +67,7 @@ void * AllocHostMemory( unsigned int memSize, bool bPinned )
     {
         // PINNED memory mode - use cuda function to get OS-pinned memory
 		unsigned int cudaFlags = 0;
-		cutilSafeCall( cudaHostAlloc( (void**)&memPtr, memSize, cudaFlags ) );
+		checkCudaErrors( cudaHostAlloc( (void**)&memPtr, memSize, cudaFlags ) );
     }
     else
     {
@@ -91,7 +91,7 @@ void FreeHostMemory( void * origPtr, bool bPinned )
 	{
 		if (true == bPinned)
 		{
-			cutilSafeCall( cudaFreeHost(memPtr) );
+			checkCudaErrors( cudaFreeHost(memPtr) );
 		}
 		else
 		{

@@ -779,7 +779,7 @@ bool AllocMem
 		// Allocate device memory for GPU KD Tree Nodes
 		if (params.mem_size_Nodes > 0)
 		{
-			cutilSafeCall( cudaMalloc( (void **) &(params.d_Nodes), params.mem_size_Nodes ) );
+			checkCudaErrors( cudaMalloc( (void **) &(params.d_Nodes), params.mem_size_Nodes ) );
 		}
 	}
 
@@ -806,7 +806,7 @@ bool AllocMem
 		// Allocate device memory for GPU Node mapping ID's
 		if (params.mem_size_IDs > 0)
 		{
-			cutilSafeCall( cudaMalloc( (void **) &(params.d_IDs), params.mem_size_IDs ) );
+			checkCudaErrors( cudaMalloc( (void **) &(params.d_IDs), params.mem_size_IDs ) );
 		}
 	}
 
@@ -921,11 +921,11 @@ bool Cleanup
 
 	// Cleanup Query Memory
 	FreeHostMemory( params.h_Query,       params.bPinned );
-	cutilSafeCall( cudaFree( params.d_Query ) );
+	checkCudaErrors( cudaFree( params.d_Query ) );
 
 	// Cleanup Results Memory
 	//FreeHostMemory( params.h_Results_GPU, params.bPinned );
-	cutilSafeCall( cudaFree( params.d_Results_GPU ) );
+	checkCudaErrors( cudaFree( params.d_Results_GPU ) );
 	if (NULL != params.h_Results_CPU)
 	{
 		free( params.h_Results_CPU );
@@ -1818,7 +1818,7 @@ bool CopyNodes
 		(NULL != params.d_Nodes) && 
 		(NULL != params.h_Nodes))
 	{
-		cutilSafeCall( cudaMemcpy( params.d_Nodes, params.h_Nodes, 
+		checkCudaErrors( cudaMemcpy( params.d_Nodes, params.h_Nodes, 
 								   params.mem_size_Nodes, cudaMemcpyHostToDevice ) );
 	}
 
@@ -1847,7 +1847,7 @@ bool CopyNodes
 		(NULL != params.d_IDs) && 
 		(NULL != params.h_IDs))
 	{
-		cutilSafeCall( cudaMemcpy( params.d_IDs, params.h_IDs, 
+		checkCudaErrors( cudaMemcpy( params.d_IDs, params.h_IDs, 
 			                       params.mem_size_IDs, cudaMemcpyHostToDevice ) );
 	}
 
@@ -1931,7 +1931,7 @@ for (currIter = 0; currIter < nProfileLoops; currIter++)
 	// Copy 'query' vector from host memory to device memory
 	if ((NULL != params.d_Query) && (NULL != params.h_Query))
 	{
-		cutilSafeCall( cudaMemcpy( params.d_Query, params.h_Query, 
+		checkCudaErrors( cudaMemcpy( params.d_Query, params.h_Query, 
 									params.mem_size_Query, cudaMemcpyHostToDevice ) );
 	}
 
@@ -2049,13 +2049,13 @@ for (currIter = 0; currIter < nProfileLoops; currIter++)
 		// Copy result vector from GPU device to host CPU
 	case NN_QNN:
 		bytesToCopy = params.nQuery * sizeof(GPU_NN_Result);
-		cutilSafeCall( cudaMemcpy( params.resultList, params.d_Results_GPU, 
+		checkCudaErrors( cudaMemcpy( params.resultList, params.d_Results_GPU, 
 			                       bytesToCopy, cudaMemcpyDeviceToHost ) );
 		break;
 
 	case NN_ALL_NN:
 		bytesToCopy = params.nSearch * sizeof(GPU_NN_Result);
-		cutilSafeCall( cudaMemcpy( params.resultList, params.d_Results_GPU, 
+		checkCudaErrors( cudaMemcpy( params.resultList, params.d_Results_GPU, 
 			                       bytesToCopy, cudaMemcpyDeviceToHost ) );
 		break;
 
