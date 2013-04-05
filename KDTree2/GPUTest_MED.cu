@@ -1014,19 +1014,19 @@ for (currIter = 0; currIter < g.profileActualLoops; currIter++)
 #if (CUDA_PLATFORM == CUDA_DEVICE)
 	if (NULL != h_KDNodes)
 	{
-		CU_SAFE_CALL( cuMemFreeHost( h_KDNodes ) );
+		checkCudaErrors( cuMemFreeHost( h_KDNodes ) );
 	}
 	if (NULL != h_IDs)
 	{
-		CU_SAFE_CALL( cuMemFreeHost( h_IDs ) );
+		checkCudaErrors( cuMemFreeHost( h_IDs ) );
 	}
 	if (NULL != h_Queries)
 	{
-		CU_SAFE_CALL( cuMemFreeHost( h_Queries ) );
+		checkCudaErrors( cuMemFreeHost( h_Queries ) );
 	}
 	if (NULL != h_Results_GPU)
 	{
-		CU_SAFE_CALL( cuMemFreeHost( h_Results_GPU ) );
+		checkCudaErrors( cuMemFreeHost( h_Results_GPU ) );
 	}
 #elif (CUDA_PLATFORM == CUDA_CUDA)
 	if (NULL != h_KDNodes)     { free( h_KDNodes ); }

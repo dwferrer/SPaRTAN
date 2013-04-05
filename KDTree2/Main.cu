@@ -2422,10 +2422,10 @@ for (currIter = 0; currIter < g.profileActualLoops; currIter++)
 	//free( h_IDs );
     //free( h_Queries );
     //free( h_Results_GPU );
-    CU_SAFE_CALL( cuMemFreeSystem( h_KDNodes ) );
-    CU_SAFE_CALL( cuMemFreeSystem( h_IDs ) );
-    CU_SAFE_CALL( cuMemFreeSystem( h_Queries ) );
-    CU_SAFE_CALL( cuMemFreeSystem( h_Results_GPU ) );
+    checkCudaErrors( cuMemFreeSystem( h_KDNodes ) );
+    checkCudaErrors( cuMemFreeSystem( h_IDs ) );
+    checkCudaErrors( cuMemFreeSystem( h_Queries ) );
+    checkCudaErrors( cuMemFreeSystem( h_Results_GPU ) );
 
 	free( h_Results_CPU );
 
