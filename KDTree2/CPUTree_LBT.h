@@ -46,7 +46,7 @@
 #ifndef _VECTOR_
 	#include <vector>
 #endif
-#include <x86intrin.h>		// Intrinsics
+//#include <x86intrin.h>		// Intrinsics
 
 
 // Cuda Includes
@@ -356,7 +356,7 @@ public:
 
 		const char * axisString = AxisToString( A );
 
-		sprintf_s( szBuff, cchBuff, "<%d, %d>=<%3.6f, %3.6f> [P=%d, L=%d, R=%d, H=%d, A=%s]", 
+		snprintf( szBuff, cchBuff, "<%d, %d>=<%3.6f, %3.6f> [P=%d, L=%d, R=%d, H=%d, A=%s]", 
 			       nodeID, searchID, x, y, 
 				   parentID, leftID, rightID, h, axisString  );
 		
@@ -617,7 +617,7 @@ public:
 
 		const char * axisString = AxisToString( A );
 
-		sprintf_s( szBuff, cchBuff, "<%d, %d>=<%3.6f, %3.6f, %3.6f> [P=%d, L=%d, R=%d, H=%d, A=%s]", 
+		snprintf( szBuff, cchBuff, "<%d, %d>=<%3.6f, %3.6f, %3.6f> [P=%d, L=%d, R=%d, H=%d, A=%s]", 
 			       nodeID, searchID, x, y, z,
 				   parentID, leftID, rightID, h, axisString  );
 		
@@ -889,7 +889,7 @@ public:
 
 		const char * axisString = AxisToString( A );
 
-		sprintf_s( szBuff, cchBuff, "<%d, %d>=<%3.6f, %3.6f, %3.6f, %3.6f> [P=%d, L=%d, R=%d, H=%d, A=%s]", 
+		snprintf( szBuff, cchBuff, "<%d, %d>=<%3.6f, %3.6f, %3.6f, %3.6f> [P=%d, L=%d, R=%d, H=%d, A=%s]", 
 			       nodeID, searchID, x, y, z, w,
 				   parentID, leftID, rightID, h, axisString  );
 		
@@ -1185,7 +1185,7 @@ public:
 
 		const char * axisString = AxisToString( A );
 
-		sprintf_s( szBuff, cchBuff, "<%d, %d>=<%3.6f, %3.6f, %3.6f, %3.6f, %3.6f, %3.6f>\n\t[P=%d, L=%d, R=%d, H=%d, A=%s]", 
+		snprintf( szBuff, cchBuff, "<%d, %d>=<%3.6f, %3.6f, %3.6f, %3.6f, %3.6f, %3.6f>\n\t[P=%d, L=%d, R=%d, H=%d, A=%s]", 
 			       nodeID, searchID, 
 				   x, y, z, w, s, t,
 				   parentID, leftID, rightID, h, axisString  );

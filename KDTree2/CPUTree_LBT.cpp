@@ -10,6 +10,8 @@
   Includes
 -------------------------------------*/
 
+
+#include <stdio.h>
 #ifndef _KD_FLAGS_H
 	#include "KD_Flags.h"
 #endif
@@ -26,11 +28,10 @@
 #ifndef _STACK_
 	#include <stack>	// Std::Stack
 #endif
-#include <intrin.h>		// Intrinsics (Intel Specific, Non-portable)
+//#include <intrin.h>		// Intrinsics (Intel Specific, Non-portable)
 
 #include <iostream>
 #include <algorithm>
-
 
 /*-------------------------------------
   Helper Methods

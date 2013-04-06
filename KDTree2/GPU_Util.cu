@@ -17,17 +17,20 @@
 #include <math.h>
 
 #if (CPU_PLATFORM == CPU_INTEL_X86)
-	#include <intrin.h>		// Intrinsics
+//	#include <intrin.h>		// Intrinsics
 #elif (CPU_PLATFORM == CPU_INTEL_X64)
-	#include <intrin.h>		// Intrinsics
+//	#include <intrin.h>		// Intrinsics
 #endif
 
 // includes, CUDA
-#include <cutil_inline.h>
-
+//#include <cutil_inline.h>
+#include <cuda.h>
+#include <cuda_runtime.h>
+#include <helper_cuda.h>
+#include <helper_timer.h>
 // includes, project
-#include "CPUTREE_API.h"
-#include "GPUTREE_API.h"
+#include "CPUTree_API.h"
+#include "GPUTree_API.h"
 
 
 /*-------------------------------------
@@ -555,7 +558,7 @@ bool GetCommandLineParams
 #endif
 
 	// Get requested GPU device to use
-    if( cutGetCmdLineArgumenti(argc, argv, "device", &iVal) )
+    if( iVal =getCmdLineArgumentInt(argc, argv, "device") )
     {
 		g.requestedDevice = iVal;
 	}
@@ -565,7 +568,7 @@ bool GetCommandLineParams
 	}
 
 	// Prompt before exiting application ?!?
-	if (cutCheckCmdLineFlag( argc, argv, "noprompt") ) 
+	if (checkCmdLineFlag( argc, argv, "noprompt") ) 
 	{
 		g.nopromptOnExit = true;
 	}
@@ -575,7 +578,7 @@ bool GetCommandLineParams
 	}
 
 	// Double Check Distances
-	if (cutCheckCmdLineFlag( argc, argv, "cdist") ) 
+	if (checkCmdLineFlag( argc, argv, "cdist") ) 
 	{
 		g.doubleCheckDists = true;
 	}
@@ -585,7 +588,7 @@ bool GetCommandLineParams
 	}
 
 	// Double Check Distances
-	if (cutCheckCmdLineFlag( argc, argv, "cmin") ) 
+	if (checkCmdLineFlag( argc, argv, "cmin") ) 
 	{
 		g.doubleCheckMin = true;
 	}
@@ -596,14 +599,14 @@ bool GetCommandLineParams
 
 
 	// Get # Threads Per Row (block shape)
-	if (cutGetCmdLineArgumenti( argc, argv, "TPR", &iVal )) 
+	if (iVal =getCmdLineArgumentInt( argc, argv, "TPR" )) 
 	{
 		if (iVal < 1) { iVal = 1; }
 		g.bgShape.threadsPerRow = iVal;
 	}
 
 	// Get # Rows Per Block
-	if (cutGetCmdLineArgumenti( argc, argv, "RPB", &iVal )) 
+	if (iVal =getCmdLineArgumentInt( argc, argv, "RPB" )) 
 	{
 		if (iVal < 1) { iVal = 1; }
 		g.bgShape.rowsPerBlock = iVal;
@@ -619,21 +622,21 @@ bool GetCommandLineParams
 	}
 
 	// Get search Vector Length
-	if (cutGetCmdLineArgumenti( argc, argv, "N", &iVal )) 
+	if ( iVal = getCmdLineArgumentInt( argc, argv, "N")) 
 	{
 		if (iVal < 1) { iVal = 10000; }
 		g.nSearch = (int)iVal;
 	}
 
 	// Get Query Vector Length
-	if (cutGetCmdLineArgumenti( argc, argv, "NQ", &iVal )) 
+	if (iVal = getCmdLineArgumentInt( argc, argv, "NQ" )) 
 	{
 		if (iVal < 1) { iVal = 100; }
 		g.nQuery = (int)iVal;
 	}
 
 	// Should we do profiling (performance measurements) on application
-	if (cutCheckCmdLineFlag( argc, argv, "profile") ) 
+	if (checkCmdLineFlag( argc, argv, "profile") ) 
 	{
 		g.profile = true;
 	}
@@ -645,7 +648,7 @@ bool GetCommandLineParams
 	if (g.profile)
 	{
 		// Get Skip First Last flag
-		if (cutCheckCmdLineFlag( argc, argv, "skip") ) 
+		if (checkCmdLineFlag( argc, argv, "skip") ) 
 		{
 			g.profileSkipFirstLast = true;
 		}
@@ -655,7 +658,7 @@ bool GetCommandLineParams
 		}
 
 		// Get Number of Iterations for Profiling performance
-		if (cutGetCmdLineArgumenti( argc, argv, "profile", &iVal )) 
+		if (iVal =getCmdLineArgumentInt( argc, argv, "profile" )) 
 		{
 			if (iVal < 1) { iVal = 100; }
 			g.profileRequestedLoops = iVal;
@@ -671,10 +674,10 @@ bool GetCommandLineParams
 	}
 
 	// Should we dump verbose results
-	if (cutCheckCmdLineFlag( argc, argv, "verbose") ) 
+	if (checkCmdLineFlag( argc, argv, "verbose") ) 
 	{
 		// Get Number of Iterations for Profiling performance
-		if (cutGetCmdLineArgumenti( argc, argv, "verbose", &iVal )) 
+		if (iVal = getCmdLineArgumentInt( argc, argv, "verbose")) 
 		{
 			g.dumpVerbose = (unsigned int)iVal;
 		}
@@ -685,7 +688,7 @@ bool GetCommandLineParams
 	}
 
 	// Should we dump verbose results
-	if (cutCheckCmdLineFlag( argc, argv, "rowbyrow") ) 
+	if (checkCmdLineFlag( argc, argv, "rowbyrow") ) 
 	{
 		g.rowByRow = true;
 	}
@@ -796,13 +799,13 @@ unsigned int LBM( unsigned int n )
 	}
 
 	// Compute height of tree
-#if (CPU_PLATFORM == CPU_INTEL_X86)
+#if 0
 	// Find position of highest set bit
 		// Non-portable solution (Use Intel Intrinsic)
 	unsigned long bitPos;
 	_BitScanReverse( &bitPos, (unsigned long)(n+1) );
 	int h       = (int)(bitPos+1);	
-#elif (CPU_PLATFORM == CPU_INTEL_X64)
+#elif 0
 	// Find position of highest set bit
 		// Non-portable solution (Use Intel Intrinsic)
 	unsigned long bitPos;

@@ -24,10 +24,17 @@
 	#include <math.h>
 #endif
 
-// Cuda Includes
-#include <cutil.h>
-#include <vector_types.h>	
+//#include "intrin_x86.h"
 
+// Cuda Includes
+#include <cuda.h>
+#include <cuda_runtime.h>
+#include <cuda_runtime_api.h>
+#include <vector_types.h>	
+#include <driver_types.h>
+#define __DRIVER_TYPES_H__
+#include <helper_cuda.h>
+#include <helper_timer.h>
 // App Includes
 #include "CPUTree_API.h"	// 
 #include "GPUTree_API.h"
@@ -95,7 +102,7 @@ void KD_LBM_CPU
 	}
 
 	// Compute height of tree
-#if 1
+#if 0
 	// Find position of highest set bit
 		// Non-portable solution (Intel Intrinsic)
 	unsigned long bitPos;
@@ -104,7 +111,7 @@ void KD_LBM_CPU
 #else
 	// Binary search for log2(n)
 		// Portable solution
-	unsigned int height  = KDTreeIntLog2( n+1 );	// Get height of tree
+	unsigned int height  = KD_IntLog2_CPU( n+1 );	// Get height of tree
 	unsigned int h = height+1;
 #endif
 

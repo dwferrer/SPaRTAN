@@ -210,8 +210,8 @@ inline unsigned int KD_Max
   export C interface
 -------------------------------------*/
 
-extern "C" unsigned int g_leftTableCPU[32];
-extern "C" unsigned int g_halfTableCPU[32];
+//extern "C" unsigned int g_leftTableCPU[32];
+//extern "C" unsigned int g_halfTableCPU[32];
 
 extern "C" unsigned int KD_IntLog2_CPU( unsigned int inVal );
 

@@ -17,6 +17,7 @@
 #include <math.h>
 
 // includes, CUDA
+#include <driver_types.h>
 #include <helper_timer.h>
 
 // includes, project
@@ -1179,7 +1180,7 @@ bool CPUTest_3D_LBT( AppGlobals & g )
 	RandomInit( 2010 );
 
 	g.hTimer = 0;
-	sdkCreateTimer( &(g.hTimer) );
+	sdkCreateTimer( g.hTimer );
 
 	/*-------------------------------------------
 	  Step 1.  Create Search & Query Vectors
@@ -2293,7 +2294,7 @@ bool CPUTest_4D_LBT( AppGlobals & g )
 	RandomInit( 2010 );
 
 	g.hTimer = 0;
-	sdkCreateTimer( &(g.hTimer) );
+	sdkCreateTimer( g.hTimer );
 
 	/*-------------------------------------------
 	  Step 1.  Create Search & Query Vectors
