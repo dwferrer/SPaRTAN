@@ -130,7 +130,7 @@ void testrTimeStep(){
 	sph = new StopWatch("sph");
 	kdk = new StopWatch("kdk");
 	getrdt = new StopWatch("rdt");
-	int steps = 20;
+	int steps = 10;
 	std::cout<<"\n...Starting Single Timestep Test...\n";
 	long int size = cube(60);
 	std::vector<particlestructure> particles;

@@ -44,7 +44,7 @@ void destroyCoverTree(){
 	particlecovertree = NULL;
 }
 
-#define NSMOOTH 100
+#define NSMOOTH 60
 float smoothingLength(particlestructure &p){
 	if (p.clean) return p.h;
 	bool  createdNN = false;
@@ -74,6 +74,7 @@ void updateNN(std::vector<particlestructure> &p){
 #pragma omp parallel for schedule(dynamic,1)
 	for(int i = 0; i < p.size(); i++){
 		std::vector<particlestructure> NN = particlecovertree->kNearestNeighbors(p[i],NSMOOTH);
+		//#pragma unroll(NSMOOTH)
 		for(int j = 0; j < NSMOOTH; j++)
 			p[i].NN[j] =  &(p[NN[j].address]);
 	}

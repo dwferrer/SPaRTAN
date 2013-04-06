@@ -1,13 +1,13 @@
 CXX=icc
 CUDACC=nvcc
-CXXFLAGS=-O3 -openmp 
+CXXFLAGS=-O3 -no-prec-div  -openmp 
 LIBS := -lgsl -lgslcblas -lm -liomp5 -lcuda -L/usr/local/cuda-5.0/lib64/ -lcudart
 
 all: testsph libsph.so
 
 
 testsph:test.cc gravity.o
-	icc -fpic $(CXXFLAGS) -o$@ $^ $(LIBS)
+	icc -fpic -MMD $(CXXFLAGS)  -o$@ $^ $(LIBS)
 
 libsph.so:gravity.o sph.o
 	icc -shared -fpic $(CXXFLAGS) -o $@ $< $(LIBS)
@@ -27,3 +27,4 @@ distclean:
 
 .PHONY: clean distclean
 -include sph.d
+-include test.d
