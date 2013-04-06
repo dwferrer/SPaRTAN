@@ -22,6 +22,7 @@
 #endif
 #ifndef __cuda_cuda_h__
 	#include <cuda.h>
+	#include <helper_timer.h>
 #endif
 
 // Project Includes
@@ -85,7 +86,7 @@ struct AppGlobals
 	unsigned int profileRequestedLoops;		// Number of requested Profile Iterations
 	unsigned int profileActualLoops;		// Number of actual Profile Iterations
 
-	unsigned int hTimer;					// CUDA Timer
+	StopWatchInterface ** hTimer;					// CUDA Timer
 	cudaEvent_t start;						// CUDA event timer (start)
 	cudaEvent_t stop;						// CUDA event timer (stop)
 

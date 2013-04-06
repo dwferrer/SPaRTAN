@@ -135,7 +135,7 @@ struct AppGlobals
 	BlockGridShape bgShape;			// Block Grid Shape
 
 	// Performance Profiling
-	unsigned int hTimer;					// CUDA Timer
+	StopWatchTimer ** hTimer;					// CUDA Timer
 	unsigned int profile;					// Should We profile performance?
 	unsigned int profileSkipFirstLast;		// Should we skip first and last loops?
 	unsigned int profileRequestedLoops;		// Number of requested Profile Iterations

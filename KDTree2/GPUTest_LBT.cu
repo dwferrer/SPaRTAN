@@ -17,7 +17,7 @@
 #include <math.h>
 
 // includes, CUDA
-#include <cutil_inline.h>
+#include <helper_timer.h>
 
 // includes, project
 #include "CPUTree_API.h"
@@ -82,7 +82,7 @@ bool CPUTest_2D_LBT( AppGlobals & g )
 	RandomInit( 2010 );
 
 	g.hTimer = 0;
-	sdkCreateTimer( &(g.hTimer) );
+	sdkCreateTimer(g.hTimer);
 
 	/*-------------------------------------------
 	  Step 1.  Create Search & Query Vectors

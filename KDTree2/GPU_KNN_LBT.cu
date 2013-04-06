@@ -16,7 +16,7 @@
 
 #include <stdio.h>
 //#include <float.h>
-#include "GPUTREE_API.h"
+#include "GPUTree_API.h"
 
 
 /*---------------------------------------------------------

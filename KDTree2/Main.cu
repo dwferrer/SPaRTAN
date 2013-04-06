@@ -1762,7 +1762,7 @@ bool InitGlobals( AppGlobals & g )
 	g.doubleCheckDists	= 1;
 
 	// Profiling Info
-	g.hTimer				= 0;
+	
 	g.profile				= 1;
 	g.profileSkipFirstLast  = 0;
 	g.profileRequestedLoops	= 1;
