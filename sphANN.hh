@@ -37,15 +37,19 @@ float kernel(float x, float h){ //cubic spline kernel
 }
 
 ANNkd_tree* kdtree;
-
+ANNpointArray pts;
 void setupCoverTree(particlestructure &p,int N){
 	std::cout<<"Making kd tree with size: "<<N<<"...";
+	pts = annAllocPts(N,3);
+	for(int i =0 ; i < N; i++) pts[i] = (ANNcoord)(p.pos +i);
 	kdtree = new ANNkd_tree ((ANNpointArray)(p.pos), N,3);
 	std::cout<<"Done.\n";
 	std::cout.flush();
 }
 void destroyCoverTree(){
 	delete kdtree;
+	annDeallocPts(pts);
+	pts = NULL;
 	kdtree = NULL;
 }
 
