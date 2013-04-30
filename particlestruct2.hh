@@ -44,8 +44,9 @@ public:
 		clean = new bool[NP];
 		mass = new float[NP];
 		T = new float[NP];
-		NN = new ANNidx *[NP * NSMOOTH];
-		NNdist = new ANNdist *[NP *NSMOOTH];
+		NN = new ANNidx[NP * NSMOOTH];
+		NNdist = new ANNdist [NP *NSMOOTH];
+		count = 0;
 	}
 
 	~particlestructure(){

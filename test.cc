@@ -56,9 +56,8 @@ void testCoverTree(){
 
 void testDirect(){
 	std::cout<<"\n...Starting Direct Gravity Test...\n";
-	long int size = 500000;//113078;
-	std::vector<particlestructure> particles;
-	particles.resize(size);
+	long int size = 113078;
+	particlestructure particles(size);
 	std::cout<<"Size: "<<size<<"\n";
 
 	const gsl_rng_type * T;
@@ -72,7 +71,8 @@ void testDirect(){
 
 	for(int i = 0; i < size; i++){
 		float3 pos(gsl_rng_uniform(r),gsl_rng_uniform(r),gsl_rng_uniform(r));
-		particles[i].position = pos;
+		particles.position[i] = pos;
+		particles.mass[i] = 1.0f/size;
 	}
 	StopWatch runtime("Direct Runtime");
 	runtime.Start();
@@ -106,8 +106,7 @@ void testDirect(){
 void testTimeStep(){
 	std::cout<<"\n...Starting Single Timestep Test...\n";
 	long int size = cube(40);
-	std::vector<particlestructure> particles;
-	particles.reserve(size);
+	particlestructure particles(size);
 	std::cout<<"Size: "<<size<<"\n";
 
 	int count = makeHomogeneousSphere(particles,40,rad);
@@ -133,8 +132,8 @@ void testrTimeStep(){
 	int steps = 10;
 	std::cout<<"\n...Starting Single Timestep Test...\n";
 	long int size = cube(60);
-	std::vector<particlestructure> particles;
-	particles.reserve(size);
+	particlestructure particles(size);
+
 	std::cout<<"Size: "<<size<<"\n";
 
 	int count = makeHomogeneousSphere(particles,60,rad);
@@ -171,8 +170,7 @@ void testgetrdt()
 void testMicro(){
 	std::cout<<"\n...Starting Microstep Test...\n";
 	long int size = cube(n1d);
-	std::vector<particlestructure> particles;
-	particles.reserve(size);
+	particlestructure particles(size);
 	std::cout<<"Size: "<<size<<"\n";
 
 	int count = makeHomogeneousSphere(particles,n1d,rad);
@@ -182,7 +180,7 @@ void testMicro(){
 
 	float dt  = timestep(particles,1,0,0);
 	float smalldt = dt;
-	for (int i = 0; i < 100; i++) dt  += microstep(particles,smalldt);
+	//for (int i = 0; i < 100; i++) dt  += microstep(particles,smalldt);
 	runtime.Stop();
 	std::cout<<"Total dt: "<<dt<<"\n";
 	std::cout<<"Last Small dt: "<<smalldt<<"\n";
@@ -194,7 +192,7 @@ void testMicro(){
 void pythonTest(){
 	int n1d = 20;
 	int size = cube(20);
-	std::vector<particlestructure> * ps = getPS(20);
+	particlestructure * ps = getPS(20);
 
 
 	int s = getsize(ps);
@@ -208,7 +206,7 @@ void pythonTest(){
 	float totaldt  = dt;
 	float smalldt = dt;
 	for(int i = 0; i < 30; i++){
-		dt = domicro(ps,&smalldt);
+		dt = 1;//domicro(ps,&smalldt);
 		totaldt += dt;
 		std::cout<<"i: "<<"\n";
 		std::cout<<"dt: "<<dt<<"\n";
