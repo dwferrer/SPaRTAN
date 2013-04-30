@@ -96,8 +96,8 @@ public:
 		th = h[i];
 		tvelocity = velocity[i];
 		tid = id[i];
-		taddress = taddress[i];
-		tmicrolevel = tmicrolevel[i];
+		taddress = address[i];
+		tmicrolevel = microlevel[i];
 		tdensity = density[i];
 		tclean = clean[i];
 		tmass = mass[i];
@@ -112,7 +112,7 @@ public:
 		density[i] = density[j];
 		clean[i] = clean[j];
 		mass[i] = mass[j];
-		tT[i] = T[j];
+		T[i] = T[j];
 		NN[i] = NN[j];
 
 		pos[i] = tpos;
@@ -123,7 +123,7 @@ public:
 		density[i] = tdensity;
 		clean[i] = tclean;
 		mass[i] = tmass;
-		tT[i] = T;
+		T[i] = tT;
 		NN[i] = tNN;
 
 	}

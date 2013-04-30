@@ -15,30 +15,29 @@
 void testCoverTree(){
 	std::cout<<"...Starting Cover Tree Test...\n";
 	int size = 2<<15;
-	std::vector<particlestructure> particles;
-	particles.resize(size);
+	particlestructure particles;
 	for(int i = 0; i <size; i++ ){
 		float3 x (i/(1.0*((float)(size))),0,0);
-		particles[i].position = x;
+		particles.pos[i] = x;
 	}
 	for (int i = 1; i < size; i++){
-		assert( particles[i-1].position.x <  particles[i].position.x);
+		assert( particles.pos[i-1].x <  particles.pos[i].x);
 		}
 	StopWatch setuptime("Cover Tree Setup Time");
 	setuptime.Start();
-	setupCoverTree(particles, 2.0);
+	setupCoverTree(particles, size);
 	setuptime.Stop();
 	std::cout<<"Cover Tree Setup Time: "<<setuptime.Elapsed()<<" s \n";
 
 	StopWatch runtime("32 Nearest Neighbors Recovery and Iteration Time");
 	runtime.Start();
+	updateNN(p);
 #pragma omp parallel for schedule(dynamic,1)
 	for(int i = 0; i < size; i++){
-		std::vector<particlestructure> NN = particlecovertree->kNearestNeighbors(particles[i],100);
 		for(int j = 0; j < 32; j++){
-			float x = NN[j].position.x;
-			float highbound = particles[i].position.x + 100.0/((float)(size));
-			float lowbound = particles[i].position.x - 100.0/((float)(size));
+			float x = NN[j].pos.x;
+			float highbound = particles.pos[i].x + 100.0/((float)(size));
+			float lowbound = particles.pos[i].x - 100.0/((float)(size));
 			if (x >= highbound || x <= lowbound ){
 				std::cout<<"Problem! Assertion  "<<lowbound<<" < " <<x <<" < "<<highbound<<" is going to fail.\n";
 			}
@@ -71,7 +70,7 @@ void testDirect(){
 
 	for(int i = 0; i < size; i++){
 		float3 pos(gsl_rng_uniform(r),gsl_rng_uniform(r),gsl_rng_uniform(r));
-		particles.position[i] = pos;
+		particles.pos[i] = pos;
 		particles.mass[i] = 1.0f/size;
 	}
 	StopWatch runtime("Direct Runtime");
@@ -161,10 +160,6 @@ void testrTimeStep(){
 	delete getrdt;
 }
 
-void testgetrdt()
-{
-
-}
 
 
 void testMicro(){
