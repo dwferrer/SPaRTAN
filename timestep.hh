@@ -44,7 +44,7 @@ void drift(particlestructure &p, float dt){
 #pragma omp parallel for schedule(dynamic, 1)
 	for ( int i = 0; i < p.count; i++){
 		assert(p.velocity[i] == p.velocity[i]);
-		p.position[i] += dt* p.velocity[i];
+		p.pos[i] += dt* p.velocity[i];
 		p.clean[i] = false;
 	}
 }

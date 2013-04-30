@@ -15,7 +15,7 @@
 void testCoverTree(){
 	std::cout<<"...Starting Cover Tree Test...\n";
 	int size = 2<<15;
-	particlestructure particles;
+	particlestructure particles(size);
 	for(int i = 0; i <size; i++ ){
 		float3 x (i/(1.0*((float)(size))),0,0);
 		particles.pos[i] = x;
@@ -31,11 +31,11 @@ void testCoverTree(){
 
 	StopWatch runtime("32 Nearest Neighbors Recovery and Iteration Time");
 	runtime.Start();
-	updateNN(p);
+	updateNN(particles);
 #pragma omp parallel for schedule(dynamic,1)
 	for(int i = 0; i < size; i++){
 		for(int j = 0; j < 32; j++){
-			float x = NN[j].pos.x;
+			float x = particles.pos[particles.getNN(i)[j]].x;
 			float highbound = particles.pos[i].x + 100.0/((float)(size));
 			float lowbound = particles.pos[i].x - 100.0/((float)(size));
 			if (x >= highbound || x <= lowbound ){

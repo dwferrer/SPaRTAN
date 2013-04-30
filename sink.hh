@@ -10,12 +10,12 @@
 
 bool isBound(particlestructure &p,int i, int j){ //check if p[j] is gravitationally bound to p[i]
 	float ke = .5 * p.mass[j] *(p.velocity[j]-p.velocity[i]).norm2();
-	float pe = G * p.mass[i]*p.mass[j]/(p.position[j]-p.position[i]).norm();
+	float pe = G * p.mass[i]*p.mass[j]/(p.pos[j]-p.pos[i]).norm();
 	return ke <=pe;
 }
 
 bool momentumcheck(particlestructure p,int i1,int i2){ //check if the specific angular momentum of p2 is low enough to be accreted
-	float h = ((p.position[i2]-p.position[i1]).cross(p.velocity[i2]-p.velocity[i1])).norm();
+	float h = ((p.pos[i2]-p.pos[i1]).cross(p.velocity[i2]-p.velocity[i1])).norm();
 	float h0 = sqrtf(1*G*(p.mass[i1]+p.mass[i2])); //specific angular momentum of circular orbit at 1 AU
 	return h <= h0;
 }

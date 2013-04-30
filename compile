@@ -1,1 +1,2 @@
-icc -openmp -O3 -I./ann_float/include -o testsph test.cc -lstdc++ -liomp5  -lgsl -lgslcblas -lm -L./ann_float/lib/ -lANN
+nvcc -O3 -c gravity.cu
+icc -openmp -O3 -I./ann_float/include -o testsph test.cc gravity.o -lcuda -lcudart -lstdc++ -liomp5  -lgsl -lgslcblas -lm -L./ann_float/lib/ -lANN

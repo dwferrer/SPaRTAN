@@ -32,7 +32,7 @@
 #-----------------------------------------------------------------------------
 BASEDIR	= ..
 INCDIR	= $(BASEDIR)/include
-LIBDIR	= $(BASEDIR)/lib
+LIBDIR	= $(BASEDIR)/lib/
 
 SOURCES = ANN.cpp brute.cpp kd_tree.cpp kd_util.cpp kd_split.cpp \
 	kd_dump.cpp kd_search.cpp kd_pr_search.cpp kd_fix_rad_search.cpp \
