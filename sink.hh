@@ -8,25 +8,27 @@
 #ifndef SINK_HH_
 #define SINK_HH_
 
-bool isBound(particlestructure &p1, particlestructure &p2){ //check if p2 is gravitationally bound to p1
-	float ke = .5 * p2.mass *(p2.velocity-p1.velocity).norm2();
-	float pe = G * p1.mass*p2.mass/(p2.position-p1.position).norm();
+bool isBound(particlestructure &p,int i, int j){ //check if p[j] is gravitationally bound to p[i]
+	float ke = .5 * p.mass[j] *(p.velocity[j]-p.velocity[i]).norm2();
+	float pe = G * p.mass[i]*p.mass[j]/(p.position[j]-p.position[i]).norm();
 	return ke <=pe;
 }
 
-bool momentumcheck(particlestructure &p1, particlestructure &p2){ //check if the specific angular momentum of p2 is low enough to be accreted
-	float h = ((p2.position-p1.position).cross(p2.velocity-p1.velocity)).norm();
-	float h0 = sqrt(1*G*(p1.mass+p2.mass)); //specific angular momentum of circular orbit at 1 AU
+bool momentumcheck(particlestructure p,int i1,int i2){ //check if the specific angular momentum of p2 is low enough to be accreted
+	float h = ((p.position[i2]-p.position[i1]).cross(p.velocity[i2]-p.velocity[i1])).norm();
+	float h0 = sqrtf(1*G*(p.mass[i1]+p.mass[i2])); //specific angular momentum of circular orbit at 1 AU
 	return h <= h0;
 }
 
 #define rhoa .000067 //the accretion density
 
-bool doaccretion(std::vector<particlestructure> &p){
+bool doaccretion(particlestructure &p){
+
+	return false;/* not ready!
 	bool accreted = false;
-	for (int i = 0; i < p.size(); i++){
-		if(density(p[i])> rhoa) p[i].T = 0; //turn the particle into a sink particle
-		if(p[i].T == 0){
+	for (int i = 0; i < p.count; i++){
+		if(density(p,i)> rhoa) p.T[i] = 0; //turn the particle into a sink particle
+		if(p.T[i] == 0){
 			std::vector<long int> toAccrete;
 			toAccrete.reserve(500);
 			std::vector<particlestructure> NN = particlecovertree->kNearestNeighbors(p[i],500);
@@ -74,7 +76,7 @@ bool doaccretion(std::vector<particlestructure> &p){
 
 		}
 	}
-	return accreted;
+	return accreted;*/
 }
 
 

@@ -40,7 +40,7 @@ ANNkd_tree* kdtree;
 
 void setupCoverTree(particlestructure &p,int N){
 	std::cout<<"Making kd tree with size: "<<N<<"...";
-	kdtree = new ANNkd_tree ((ANNdistArray)(p.pos), N,3);
+	kdtree = new ANNkd_tree ((ANNdistArray)((float *)(p.pos)), N,3);
 	std::cout<<"Done.\n";
 	std::cout.flush();
 }

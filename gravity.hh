@@ -28,10 +28,10 @@ void directGrav(particlestructure &p, std::vector<float3> &acc,float cfs = 0){
 			if (cfs == 0) fs = sq(p.h[i]);
 			else fs = cfs;
 			for (int j = 0; j < p.count ; j++){
-				float3 xij = (p.position[i]-p.position[j]);
+				float3 xij = (p.pos[i]-p.pos[j]);
 				float rij = xij.norm2();
 				float ex = (float)(-3.0/2.0);
-				acc[i] += -G *p.mass[j] * (std::powf(rij+sq(fs),ex)) * xij;
+				acc[i] += -G *p.mass[j] * (std::pow(rij+sq(fs),ex)) * xij;
 			}
 			assert(acc[i]==acc[i]); //check for NaNs
 		}
