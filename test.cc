@@ -4,7 +4,7 @@
  *  Created on: Nov 5, 2012
  *      Author: dferrer
  */
-#include "sph.cc"
+#include "pyinterface.cc"
 #include "StopWatch.cc"
 #include <cassert>
 #include <iostream>
