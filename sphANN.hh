@@ -80,7 +80,7 @@ void updateNN(particlestructure &p){
 }
 
 float density(particlestructure &p,int k){
-	if(p.clean) return p.density;
+	if(p.clean[k]) return p.density[k];
 
 	float result = 0;
 	bool  createdNN = false;
