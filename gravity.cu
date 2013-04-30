@@ -4,7 +4,7 @@
 //shamelessly stolen from cuda gems nbody code
 #define EPS2 0.00000001
 #define NThreads 1024
-__device__ float3
+__device__ float4
 bodyBodyInteraction(float4 bi, float4 bj, float4 ai)
 {
         float3 r;
