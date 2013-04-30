@@ -1,1 +1,1 @@
-icc -g3  -openmp-stubs -O0 -o testsph test.cc -lstdc++ -liomp5  -lgsl -lgslcblas -lm
+icc -openmp -O3 -I./ann_float/include -o testsph test.cc -lstdc++ -liomp5  -lgsl -lgslcblas -lm -L./ann_float/lib/ -lANN
