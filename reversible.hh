@@ -25,8 +25,8 @@ StopWatch *getrdt;
 }*/
 
 //A more time reversible variable time step integrator based on hut, 1995. TODO:has no temperature integrator as of yet
-float reversibletimestep(std::vector<particlestructure> &p,std::vector<float3> &lastacc, float &lastfs, bool first = false,bool last = false){
-	int np = p.size();
+float reversibletimestep(particlestructure &p,std::vector<float3> &lastacc, float &lastfs, bool first = false,bool last = false){
+	int np = p.count;
 	std::vector<float3> acc;
 
 
@@ -36,25 +36,25 @@ float reversibletimestep(std::vector<particlestructure> &p,std::vector<float3> &
 
 
 	float maxa = 0;
-	float minh = 4*rad;
+	float minh = FLT_MAX;
 	if (first){ //we need to get the initial acceleration for the first timestep
-		setupCoverTree(p,sq(40*rad));
+		setupCoverTree(p,np);
 		updateNN(p);
 
 	#pragma omp parallel for schedule(dynamic,1)
 		for(int i = 0; i < np; i++){
-			lastacc[i] = accel(p[i]);
+			lastacc[i] = accel(p,i);
 		}
 
 
 		for(int i = 0; i < np; i++){
-			if (p[i].h < minh) minh = p[i].h;
+			if (p.h[i] < minh) minh = p.h[i];
 		}
 
 		float fs = minh/(NSMOOTH *5);
 		lastfs = fs;
 
-		cudaGrav(p,lastacc,fs);
+		cudaGrav(p,lastacc,0);
 
 		destroyCoverTree();
 	}
@@ -72,7 +72,7 @@ float reversibletimestep(std::vector<particlestructure> &p,std::vector<float3> &
 	kdk->Stop();
 
 	ctsetup->Start();
-	setupCoverTree(p,sq(40*rad));
+	setupCoverTree(p,np);
 	ctsetup->Stop();
 
 	nnupdate->Start();
@@ -87,18 +87,18 @@ float reversibletimestep(std::vector<particlestructure> &p,std::vector<float3> &
 //	}
 	sph->Start();
 	for(int i = 0; i < np; i++){
-		acc[i] = accel(p[i]);
+		acc[i] = accel(p,i);
 	}
 	sph->Stop();
 
 	for(int i = 0; i < np; i++){
-		if (p[i].h < minh) minh = p[i].h;
+		if (p.h[i] < minh) minh = p.h[i];
 	}
 
 	float fs = minh/(NSMOOTH *5);
 
 	grav->Start();
-	cudaGrav(p,acc,fs);
+	cudaGrav(p,acc,0);
 	grav->Stop();
 
 	for(int i = 0; i < np; i++){

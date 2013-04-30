@@ -9,7 +9,7 @@
 #define GRAVITY_HH_
 
 #ifndef G
-#define G 3.942 *pow(10,7) //G *Msun*(1 ka)^2/(1 au)^3. change for other units
+#define G 3.942f *pow(10,7) //G *Msun*(1 ka)^2/(1 au)^3. change for other units
 #endif
 #ifndef FS
 #define FS 1.0
@@ -19,19 +19,19 @@
 //level is the maximum micro-stepping  level that the calculation should be done for. This is currently always less than 10, so omitting this
 //argument will do the calculation for every particle in p
 //TODO: Write this using trees
-void directGrav(std::vector<particlestructure> &p, std::vector<float3> &acc,float cfs = 0){
-	assert(p.size() == acc.size());
+void directGrav(particlestructure &p, std::vector<float3> &acc,float cfs = 0){
+	assert(p.count == acc.size());
 #pragma omp parallel for schedule(dynamic, 1)
-	for (int i = 0; i < p.size(); i++) {
+	for (int i = 0; i < p.count; i++) {
 		{
 			float fs;
-			if (cfs == 0) fs = sq(p[i].h /(10 *NSMOOTH));
+			if (cfs == 0) fs = sq(p.h[i]);
 			else fs = cfs;
-			for (int j = 0; j < p.size() ; j++){
-				float3 xij = (p[i].position-p[j].position);
+			for (int j = 0; j < p.count ; j++){
+				float3 xij = (p.position[i]-p.position[j]);
 				float rij = xij.norm2();
 				float ex = (float)(-3.0/2.0);
-				acc[i] += -G *p[j].mass * (std::pow(rij+sq(fs),ex)) * xij;
+				acc[i] += -G *p.mass[j] * (std::powf(rij+sq(fs),ex)) * xij;
 			}
 			assert(acc[i]==acc[i]); //check for NaNs
 		}
@@ -40,23 +40,26 @@ void directGrav(std::vector<particlestructure> &p, std::vector<float3> &acc,floa
 
 void gpugravity(float * pos, float *accel, long long int N); //provided by gravity.cu
 
-void cudaGrav(std::vector<particlestructure> &p, std::vector<float3> &acc,float cfs = 0){
+void cudaGrav(particlestructure &p, std::vector<float3> &acc,float cfs = 0){
 
-	long long  int np = p.size();
+	long long  int np = p.count;
 	//first we need to copy the particles into good cuda order
 	float * pos = new float[np*4];
 	float *a = new float[np*4];
 
 	#pragma omp parallel for schedule(dynamic,1)
 	for(int i = 0; i < np; i++){
-		pos[4*i + 0] = p[i].position.x;
-		pos[4*i + 1] = p[i].position.y;
-		pos[4*i + 2] = p[i].position.z;
-		pos[4*i + 3] = p[i].h;
+		float fs;
+		if (cfs == 0) fs = sq(p.h[i]);
+		else fs = cfs;
+		pos[4*i + 0] = p.pos[i].x;
+		pos[4*i + 1] = p.pos[i].y;
+		pos[4*i + 2] = p.pos[i].z;
+		pos[4*i + 3] = p.mass[i];
 		a[4*i +0] = acc[i].x;
 		a[4*i +1] = acc[i].y;
 		a[4*i +2] = acc[i].z;
-		a[4*i +3] = 0.0;
+		a[4*i +3] = fs;
 	}
 
 	gpugravity(pos,a,np);

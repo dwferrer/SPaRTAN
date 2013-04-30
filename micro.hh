@@ -11,6 +11,8 @@
 #define MINMICROLEVEL 3
 #define MAXMICROLEVEL (10+ MINMICROLEVEL)
 
+/*
+
 void microupdateNN(std::vector<particlestructure *> &p,std::vector<particlestructure > &pf){
 #pragma omp parallel for schedule(dynamic,1)
         for(int i = 0; i < p.size(); i++){
@@ -61,7 +63,7 @@ void microGrav(std::vector<particlestructure *>  &p1, std::vector<particlestruct
 
 //Setup the microstepping levels and lists levellists should be an array of arrays of pointers to particle structure elements, each of length np
 //levelcounts is an array holding the number of particles in each microstepping level
-unsigned short setupMicro(std::vector<particlestructure> &p, std::vector<float3> &acc,/*std::vector<float> &dT,*/float fs, float globaldt, std::vector<std::vector<particlestructure *> > &levellists){
+unsigned short setupMicro(std::vector<particlestructure> &p, std::vector<float3> &acc,/*std::vector<float> &dT,float fs, float globaldt, std::vector<std::vector<particlestructure *> > &levellists){
 	long int np = p.size();
 
 	for(int i = 0; i < np; i++){
@@ -163,7 +165,7 @@ void fullupdateT(std::vector<particlestructure> &p,std::vector<float> &dT,float 
 
 //***************************************************************************************
 
-void recalcMicrolevel(int level, std::vector<std::vector<particlestructure *> > &levellists,std::vector<float3> &acc,/*std::vector<float> &dT,*/float fs, float globaldt, unsigned short maxlevel){
+void recalcMicrolevel(int level, std::vector<std::vector<particlestructure *> > &levellists,std::vector<float3> &acc,/*std::vector<float> &dT,float fs, float globaldt, unsigned short maxlevel){
 	std::vector<int> toErase;
 	for(int i = 0; i <levellists[level].size(); i++){
 		particlestructure * p = levellists[level][i];
@@ -380,5 +382,6 @@ float microstep(std::vector<particlestructure> &p,float &lastdt){
 
 }
 
+*/
 
 #endif /* MICRO_HH_ */

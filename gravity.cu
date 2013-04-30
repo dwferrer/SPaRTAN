@@ -5,7 +5,7 @@
 #define EPS2 0.00000001
 #define NThreads 1024
 __device__ float3
-bodyBodyInteraction(float4 bi, float4 bj, float3 ai)
+bodyBodyInteraction(float4 bi, float4 bj, float4 ai)
 {
         float3 r;
         // r_ij [3 FLOPS]
@@ -13,7 +13,7 @@ bodyBodyInteraction(float4 bi, float4 bj, float3 ai)
         r.y = bj.y - bi.y;
         r.z = bj.z - bi.z;
         // distSqr = dot(r_ij, r_ij) + EPS^2 [6 FLOPS]
-        float distSqr = r.x * r.x + r.y * r.y + r.z * r.z + EPS2;
+        float distSqr = r.x * r.x + r.y * r.y + r.z * r.z + ai.w;
         // invDistCube =1/distSqr^(3/2) [4 FLOPS (2 mul, 1 sqrt, 1 inv)]
         float distSixth = distSqr * distSqr * distSqr;
         float invDistCube = 1.0f/sqrtf(distSixth);
@@ -44,8 +44,8 @@ struct SharedMemory
 };
 
 
-__device__ float3
-tile_calculation(float4 myPosition, float3 accel){
+__device__ float4
+tile_calculation(float4 myPosition, float4 accel){
         long long  int i;
         float4 *shPosition = SharedMemory<float4>();
         #pragma unroll 32
@@ -63,10 +63,10 @@ calculate_forces(void *devX, void *devA,long long int N)
         float4 *globalA = (float4 *)devA;
         float4 myPosition;
         int i, tile;
-        float3 acc;
+        float4 acc;
         int gtid = blockIdx.x * blockDim.x + threadIdx.x;
         myPosition = globalX[gtid];
-        acc.x = globalA[gtid].x; acc.y = globalA[gtid].y; acc.z = globalA[gtid].z;
+        acc.x = globalA[gtid].x; acc.y = globalA[gtid].y; acc.z = globalA[gtid].z; acc.w = globalA[gtid].w;
         for (i = 0, tile = 0; i < N; i += NThreads, tile++) {
                 int idx = tile * blockDim.x + threadIdx.x;
                 shPosition[threadIdx.x] = globalX[idx];

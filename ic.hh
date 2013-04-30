@@ -8,7 +8,7 @@
 #ifndef IC_HH_
 #define IC_HH_
 
-float rad = 3870.0; //AU
+const float rad = 3870.0; //AU
 int n1d = 20;
 
 
@@ -16,7 +16,7 @@ int n1d = 20;
 #define T0 10 //K
 #endif
 
-int makeHomogeneousSphere(std::vector<particlestructure> &p, int n1d,float radius){
+int makeHomogeneousSphere(particlestructure &p, int n1d,float radius){
 	int particlesadded = 0;
 	float r2 = radius*radius;
 	std::vector<float> phi;
@@ -32,7 +32,6 @@ int makeHomogeneousSphere(std::vector<particlestructure> &p, int n1d,float radiu
 	z.y = 0;
 	z.z  =1;
 	float3 omega = .001*z;
-	p.resize(n1d*n1d*n1d);
 
 	for(int i = -n1d/2; i< n1d/2; i++){
 		for(int j = -n1d/2; j < n1d/2; j++){
@@ -41,27 +40,26 @@ int makeHomogeneousSphere(std::vector<particlestructure> &p, int n1d,float radiu
 				rijk2 *= sq(2*radius/(n1d));
 				if (rijk2 <= r2) {
 					//std::cout<<"(i,j,k): ("<<i<<" , "<<j<<" , "<<k<<")\n";
-					particlestructure pijk;
-					pijk.position = (2*(float)(i)/((float)(n1d)))*radius *x +(2*(float)(j)/((float)(n1d)))*radius*y+(2*(float)(k)/((float)(n1d)))*radius*z ;
-					//std::cout<<"pijk: "<<pijk.position<<"\n";
-					pijk.velocity = omega.cross(pijk.position);
-					pijk.id = particlesadded;
-					pijk.address = particlesadded;
-					pijk.microlevel = 0;
-					pijk.h = 0;
-					pijk.density = 0;
+
+					p.pos[particlesadded] = (2*(float)(i)/((float)(n1d)))*radius *x +(2*(float)(j)/((float)(n1d)))*radius*y+(2*(float)(k)/((float)(n1d)))*radius*z ;
+					//std::cout<<"p: "<<p.pos<<"\n";
+					p.velocity[particlesadded] = omega.cross(p.pos[particlesadded]);
+					p.id[particlesadded] = particlesadded;
+					p.address[particlesadded] = particlesadded;
+					p.microlevel[particlesadded] = 0;
+					p.h[particlesadded] = 0;
+					p.density[particlesadded] = 0;
 
 
 
-					pijk.clean = false;
-					pijk.T = T0;
+					p.clean[particlesadded] = false;
+					p.T[particlesadded] = T0;
 
 
-					p[particlesadded] = pijk;
-					p[particlesadded].NN.resize(NSMOOTH);
+
 					float myphi;
-					if (pijk.position.norm() == 0) myphi = 0;
-					else myphi =2*sq(pijk.position.z/pijk.position.norm())-1;
+					if (p.pos[particlesadded].norm() == 0) myphi = 0;
+					else myphi =2*sq(p.pos[particlesadded].z/p.pos[particlesadded].norm())-1;
 
 					phi.push_back(myphi);
 					particlesadded++;
@@ -70,12 +68,12 @@ int makeHomogeneousSphere(std::vector<particlestructure> &p, int n1d,float radiu
 
 		}
 	}
-	p.resize(particlesadded);
+	p.count = particlesadded;
 
 #pragma omp parallel for schedule(dynamic,1)
 	for(int i = 0; i < particlesadded; i ++){
-		p[i].mass = 50.0/((float)(particlesadded)) *(1+ .01*phi[i]);
-		if (p[i].position.norm2() ==0) p[i].mass = 1;
+		p.mass[i] = 50.0/((float)(particlesadded));//*(1+ .01*phi[i]);
+		//if (p[i].pos.norm2() ==0) p[i].mass = 1;
 	}
 
 

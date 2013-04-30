@@ -125,7 +125,7 @@ void getAcc(particlestructure *ps, float * result){
 void getg(particlestructure *ps, float * result){
 
 	float3 * res = (float3 *) result;
-	int size = ps->size();
+	int size = ps->count;
 	std::vector<float3> g;
 	g.resize(size);
 	for (int i = 0; i < g.size(); i++){
@@ -223,16 +223,16 @@ void getMicro(particlestructure *ps, unsigned short * result){
 	}
 }
 
-float stepforward(std::vector<particlestructure> *ps, bool first = false, bool last = false, float dt = 0){
+float stepforward(particlestructure *ps, bool first = false, bool last = false, float dt = 0){
 
 	return timestep(*ps,first,last,dt);
 }
 
 float domicro(std::vector<particlestructure> *ps,float *dt){
-	return microstep(*ps,*dt);
+	return 0;//microstep(*ps,*dt);
 }
 
-float rts(std::vector<particlestructure> *ps,bool first, bool last, float3 * lastacc, float * lfs ){//reversible time step
+float rts(particlestructure *ps,bool first, bool last, float3 * lastacc, float * lfs ){//reversible time step
 	ctsetup = new StopWatch("ctsetup");
 	nnupdate = new StopWatch("nnupdate");
 	grav = new StopWatch("cudagrav");
@@ -240,9 +240,9 @@ float rts(std::vector<particlestructure> *ps,bool first, bool last, float3 * las
 	kdk = new StopWatch("kdk");
 	getrdt = new StopWatch("rdt");
 	std::vector<float3> la;
-	la.resize(ps->size());
+	la.resize(ps->count);
 #pragma omp parallel for schedule(dynamic,1)
-	for(int i = 0; i<ps->size(); i++){
+	for(int i = 0; i<ps->count; i++){
 		la[i] = lastacc[i];
 	}
 
