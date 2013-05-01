@@ -52,7 +52,7 @@ tile_calculation(float4 myPosition, float4 accel){
         for (i = 0; i < blockDim.x; i++) {
         accel = bodyBodyInteraction(myPosition, shPosition[i], accel);
         }
-        return accel;
+        return -accel;
         }
 
 __global__ void
