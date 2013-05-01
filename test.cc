@@ -34,10 +34,10 @@ void testCoverTree(){
 	updateNN(particles);
 #pragma omp parallel for schedule(dynamic,1)
 	for(int i = 0; i < size; i++){
-		for(int j = 0; j < 32; j++){
+		for(int j = 0; j < NSMOOTH; j++){
 			float x = particles.pos[particles.getNN(i)[j]].x;
-			float highbound = particles.pos[i].x + 100.0/((float)(size));
-			float lowbound = particles.pos[i].x - 100.0/((float)(size));
+			float highbound = particles.pos[i].x + (1.01*NSMOOTH)/((float)(size));
+			float lowbound = particles.pos[i].x - (1.01*NSMOOTH)/((float)(size));
 			if (x >= highbound || x <= lowbound ){
 				std::cout<<"Problem! Assertion  "<<lowbound<<" < " <<x <<" < "<<highbound<<" is going to fail.\n";
 			}

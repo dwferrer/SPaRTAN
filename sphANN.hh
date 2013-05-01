@@ -79,7 +79,7 @@ void updateSmoothingLenghts(particlestructure &p, long long int np){
 void updateNN(particlestructure &p){
 #pragma omp parallel for schedule(dynamic,1)
 	for(int i = 0; i < p.count; i++){
-		kdtree->annkSearch((float *)(&(p.pos[i])),3,p.getNN(i),p.getNNdist(i),0.0);
+		kdtree->annkSearch((float *)(&(p.pos[i])),NSMOOTH,p.getNN(i),p.getNNdist(i),0.0);
 	}
 }
 
