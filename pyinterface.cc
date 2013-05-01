@@ -134,7 +134,7 @@ void getg(particlestructure *ps, float * result){
 		g[i].z = 0;
 	}
 	setupCoverTree(*ps,size);
-        updateNN(*ps);
+    updateNN(*ps);
 	updateSmoothingLenghts(*ps,size);
 	cudaGrav(*ps,g,0);
 
