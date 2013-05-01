@@ -46,7 +46,7 @@ public:
 		T = new float[NP];
 		NN = new ANNidx[NP * NSMOOTH];
 		NNdist = new ANNdist [NP *NSMOOTH];
-		count = 0;
+		count = NP;
 	}
 
 	~particlestructure(){

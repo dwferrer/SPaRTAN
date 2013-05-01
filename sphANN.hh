@@ -40,9 +40,9 @@ ANNkd_tree* kdtree;
 ANNpointArray pts;
 void setupCoverTree(particlestructure &p,int N){
 	std::cout<<"Making kd tree with size: "<<N<<"...";
-	pts = annAllocPts(N,3);
-	for(int i =0 ; i < N; i++) pts[i] = (ANNcoord)(p.pos +i);
-	kdtree = new ANNkd_tree ((ANNpointArray)(p.pos), N,3);
+	pts = new ANNpoint[N];
+	for(int i =0 ; i < N; i++) pts[i] = (ANNcoord *)(p.pos +i);
+	kdtree = new ANNkd_tree (pts, N,3);
 	std::cout<<"Done.\n";
 	std::cout.flush();
 }
@@ -79,7 +79,8 @@ void updateSmoothingLenghts(particlestructure &p, long long int np){
 void updateNN(particlestructure &p){
 #pragma omp parallel for schedule(dynamic,1)
 	for(int i = 0; i < p.count; i++){
-		kdtree->annkSearch((float *)(&(p.pos[i])),NSMOOTH,p.getNN(i),p.getNNdist(i),0.0);
+		kdtree->annkSearch(pts[i],NSMOOTH,p.getNN(i),p.getNNdist(i),0.0);
+		//for(int j = 0; j < NSMOOTH-1; j++) assert(p.getNN(i)[j] == p.getNN(i)[j+1] ); //Make sure we got discrete points
 	}
 }
 

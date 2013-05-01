@@ -14,8 +14,9 @@
 
 void testCoverTree(){
 	std::cout<<"...Starting Cover Tree Test...\n";
-	int size = 2<<15;
+	int size = 113078;
 	particlestructure particles(size);
+	particles.count = size;
 	for(int i = 0; i <size; i++ ){
 		float3 x (i/(1.0*((float)(size))),0,0);
 		particles.pos[i] = x;
@@ -218,7 +219,7 @@ void pythonTest(){
 int main(){
 	feenableexcept(FE_INVALID | FE_DIVBYZERO);
 	testCoverTree();
-	testDirect();
+	//testDirect();
 	testrTimeStep();
 	//pythonTest();
 
