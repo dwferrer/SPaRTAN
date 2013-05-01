@@ -145,6 +145,29 @@ void getg(particlestructure *ps, float * result){
 
 }
 
+void getgcpu(particlestructure *ps, float * result){
+
+	float3 * res = (float3 *) result;
+	int size = ps->count;
+	std::vector<float3> g;
+	g.resize(size);
+	for (int i = 0; i < g.size(); i++){
+		g[i].x = 0;
+		g[i].y = 0;
+		g[i].z = 0;
+	}
+	setupCoverTree(*ps,size);
+        updateNN(*ps);
+	updateSmoothingLenghts(*ps,size);
+	directGrav(*ps,g,0);
+
+#pragma omp parallel for schedule(dynamic,1)
+	for(int i = 0; i < size; i++){
+		res[i] = g[i];
+	}
+
+}
+
 void getT(particlestructure *ps, float * result){
 	int size = ps->count;
 	setupCoverTree(*ps,size);
