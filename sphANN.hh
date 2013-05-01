@@ -48,7 +48,7 @@ void setupCoverTree(particlestructure &p,int N){
 }
 void destroyCoverTree(){
 	delete kdtree;
-	annDeallocPts(pts);
+	delete pts;
 	pts = NULL;
 	kdtree = NULL;
 }
