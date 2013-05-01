@@ -96,7 +96,7 @@ float density(particlestructure &p,int k){
 	for(int i = 0; i < NSMOOTH; i++)
 	{
 		float x = p.getNNdist(k)[i];
-		result += p.mass[p.getNN(k)[i]] * kernel(x,smoothingLength(p,i));
+		result += p.mass[p.getNN(k)[i]] * kernel(x,smoothingLength(p,p.getNN(k)[i]));
 	}
 	//result06+= p.mass *kernel(0,p.h);
 	//if(createdNN) delete NN;
