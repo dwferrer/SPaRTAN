@@ -217,8 +217,8 @@ void pythonTest(){
 
 int main(){
 	feenableexcept(FE_INVALID | FE_DIVBYZERO);
-	//testCoverTree();
-	//testDirect();
+	testCoverTree();
+	testDirect();
 	testrTimeStep();
 	//pythonTest();
 
