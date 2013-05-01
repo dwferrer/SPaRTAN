@@ -77,7 +77,7 @@ void updateSmoothingLenghts(particlestructure &p, long long int np){
 }
 
 void updateNN(particlestructure &p){
-#pragma omp parallel for schedule(dynamic,1)
+//#pragma omp parallel for schedule(dynamic,1)
 	for(int i = 0; i < p.count; i++){
 		kdtree->annkSearch(pts[i],NSMOOTH,p.getNN(i),p.getNNdist(i),0.0);
 		//for(int j = 0; j < NSMOOTH-1; j++) assert(p.getNN(i)[j] == p.getNN(i)[j+1] ); //Make sure we got discrete points
