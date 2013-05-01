@@ -143,7 +143,10 @@ void testrTimeStep(){
 	float fs =0;
 	runtime.Start();
 	float dt  = reversibletimestep(particles,a,fs,true,false);
-	for(int i = 0; i < steps -1; i++) reversibletimestep(particles,a,fs,false,false);
+	for(int i = 0; i < steps -1; i++) {
+		std::cout<<"Step: "<<1+i<<"\n";
+		reversibletimestep(particles,a,fs,false,false);
+	}
 	runtime.Stop();
 	std::cout<<"dt: "<<dt<<"\n";
 	std::cout<<"\nRun time: "<<runtime.Elapsed()<<" s\n";
