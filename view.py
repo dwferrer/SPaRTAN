@@ -93,7 +93,7 @@ def plots(fn,totalt):
     cb4 = fig4.colorbar(plt4)
     cb4.set_label("log(max density) (Msun/AU$^3$)")
     fig4.savefig(fn+".column.png",format = 'png')
-    p.close('all')
+    #p.close('all')
     return totalt
 
 if __name__ == '__main__':

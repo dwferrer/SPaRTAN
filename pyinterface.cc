@@ -24,7 +24,7 @@
 extern "C"{
 
 particlestructure* getPS(int n1d){
-	particlestructure * res = new particlestructure(n1d);
+	particlestructure * res = new particlestructure(n1d*n1d*n1d);
 
 	int count = makeHomogeneousSphere(*res,n1d,rad);
 	std::cout<<"Sphere Count: "<<count<<"\n";
@@ -133,8 +133,10 @@ void getg(particlestructure *ps, float * result){
 		g[i].y = 0;
 		g[i].z = 0;
 	}
-
-	directGrav(*ps,g,FS);
+	setupCoverTree(*ps,size);
+        updateNN(*ps);
+	updateSmoothingLenghts(*ps,size);
+	cudaGrav(*ps,g,0);
 
 #pragma omp parallel for schedule(dynamic,1)
 	for(int i = 0; i < size; i++){

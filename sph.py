@@ -1,3 +1,5 @@
+#!/usr/bin/python
+
 #driver for basic sph tests
 
 
@@ -10,7 +12,7 @@ import matplotlib.pyplot as p
 
 from mpl_toolkits.mplot3d import Axes3D
 
-sphlib = ct.cdll.LoadLibrary("./Release/libsph.so")
+sphlib = ct.cdll.LoadLibrary("./libsph.so")
 sphlib.stepforward.restype = ct.c_float
 sphlib.domicro.restype = ct.c_float
 sphlib.rts.restype = ct.c_float
@@ -166,15 +168,16 @@ def runmodel(steps):
     print "size: "+str(getExtent(ps))
     
 def runsingle(steps):
-    n1d = 30
+    n1d = 60
     ps = sphlib.getPS(n1d)
-    addturbulence(ps)
+    #addturbulence(ps)
     size = sphlib.getsize(ps)
     
     acc = np.zeros((size,3),dtype = np.float32)
     fs = np.zeros(1,dtype = np.float32)
     totalt = 0.0
     dt = sphlib.rts(ps,1,0,arrayToCPointer(sanitize(acc)),arrayToCPointer(sanitize(fs)))
+    saveState(ps,"./stepic"+".npz",dt)
     print "dt:  " +str(dt)
     for i in range(steps):
         print i

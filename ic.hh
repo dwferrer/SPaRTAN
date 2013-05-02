@@ -9,7 +9,6 @@
 #define IC_HH_
 
 const float rad = 3870.0; //AU
-int n1d = 20;
 
 
 #ifndef T0

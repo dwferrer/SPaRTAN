@@ -1,21 +1,21 @@
 CXX=icc
 CUDACC=nvcc
-CXXFLAGS=-O3 -no-prec-div  -openmp 
-LIBS := -lgsl -lgslcblas -lm -liomp5 -lcuda -L/usr/local/cuda-5.0/lib64/ -lcudart
+CXXFLAGS=-O3 -no-prec-div -openmp -I./ann_float/include/
+LIBS := -lgsl -lgslcblas -lm -liomp5 -lcuda -L/usr/local/cuda-5.0/lib64/ -lcudart -L./ann_float/lib/ -lANN
 
 all: testsph libsph.so
 
 
 testsph:test.cc gravity.o
-	icc -fpic -MMD $(CXXFLAGS)  -o$@ $^ $(LIBS)
+	icc -fpic -MMD $(CXXFLAGS)  -o$@ $< gravity.o $(LIBS)
 
-libsph.so:gravity.o sph.o
-	icc -shared -fpic $(CXXFLAGS) -o $@ $< $(LIBS)
+libsph.so:pyinterface.o gravity.o
+	icc -shared -fpic $(CXXFLAGS) -o $@ $< gravity.o $(LIBS)
 
-sph.o:sph.cc
+pyinterface.o:pyinterface.cc Makefile
 	icc -fpic -MMD $(CXXFLAGS) -c $<
 
-gravity.o:gravity.cu
+gravity.o:gravity.cu Makefile
 	nvcc --use_fast_math -Xcompiler -fPIC -c $<
 
 
@@ -26,5 +26,5 @@ distclean:
 	rm -f *.o *.d *.so testsph
 
 .PHONY: clean distclean
--include sph.d
--include test.d
+-include pyinterface.d
+-include testsph.d

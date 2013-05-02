@@ -56,9 +56,9 @@ void cudaGrav(particlestructure &p, std::vector<float3> &acc,float cfs = 0){
 		pos[4*i + 1] = p.pos[i].y;
 		pos[4*i + 2] = p.pos[i].z;
 		pos[4*i + 3] = p.mass[i];
-		a[4*i +0] = acc[i].x;
-		a[4*i +1] = acc[i].y;
-		a[4*i +2] = acc[i].z;
+		a[4*i +0] = acc[i].x/G;
+		a[4*i +1] = acc[i].y/G;
+		a[4*i +2] = acc[i].z/G;
 		a[4*i +3] = fs;
 	}
 
@@ -66,9 +66,9 @@ void cudaGrav(particlestructure &p, std::vector<float3> &acc,float cfs = 0){
 
 #pragma omp parallel for schedule(dynamic,1)
 	for(int i = 0; i < np; i++){
-		acc[i].x = a[4*i +0];
-		acc[i].y = a[4*i +1];
-		acc[i].z = a[4*i +2];
+		acc[i].x = G*a[4*i +0];
+		acc[i].y = G*a[4*i +1];
+		acc[i].z = G*a[4*i +2];
 	}
 
 

@@ -62,7 +62,7 @@ float smoothingLength(particlestructure &p, int k){ //get the smoothing length f
 		float dist = p.getNNdist(k)[i];
 		if (dist > maxdist) maxdist = dist;
 	}
-	float h = maxdist/2.0;
+	float h = sqrt(maxdist)/2.0;
 	p.h[k] = h;
 	assert(h >0);
 

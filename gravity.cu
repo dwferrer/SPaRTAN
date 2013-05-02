@@ -84,8 +84,6 @@ void gpugravity(float * pos, float *accel, long long int N){
         float4 *positions = (float4 *) pos;
         float4 *acc = (float4 *) accel;
         int size = N*sizeof(float4);
-        positions = (float4 * ) malloc(size);
-        acc = (float4 *) malloc(size);
 
         float4 * d_pos, *d_acc;
         int d_size = N*sizeof(float4);

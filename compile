@@ -1,2 +1,2 @@
 nvcc -O3 -c gravity.cu
-icc -openmp-stubs -O0 -g3 -I./ann_float/include -o testsph test.cc gravity.o -L/usr/local/cuda-5.0/lib64/ -lcuda -lcudart -lstdc++ -liomp5  -lgsl -lgslcblas -lm -L./ann_float/lib/ -lANN
+icc -openmp-stubs -O0 -g3  -I./ann_float/include -o testsph test.cc gravity.o -L/usr/local/cuda-5.0/lib64/ -lcuda -lcudart -lstdc++ -liomp5  -lgsl -lgslcblas -lm -L./ann_float/lib/ -lANN

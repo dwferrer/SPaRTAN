@@ -168,6 +168,7 @@ void testrTimeStep(){
 
 void testMicro(){
 	std::cout<<"\n...Starting Microstep Test...\n";
+	int n1d = 60;
 	long int size = cube(n1d);
 	particlestructure particles(size);
 	std::cout<<"Size: "<<size<<"\n";
@@ -194,7 +195,7 @@ void pythonTest(){
 	particlestructure * ps = getPS(20);
 
 
-	int s = getsize(ps);
+	int s = ps->count;
 	float * g = new float[3*s];
 	for(int i = 0; i < 3*s; i++) g[i] = 0;
 	getg(ps,g);
@@ -221,10 +222,10 @@ void pythonTest(){
 
 int main(){
 	feenableexcept(FE_INVALID | FE_DIVBYZERO);
-	testCoverTree();
+	//testCoverTree();
 	//testDirect();
-	testrTimeStep();
-	//pythonTest();
+	//testrTimeStep();
+	pythonTest();
 
 	//testMicro();
 
