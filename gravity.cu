@@ -87,16 +87,67 @@ calculate_forces(void *devXsource, void * devXsink, void *devA, int Nsource, int
 void gpugravity(float * pos, float *accel, long long int N){
         float4 *positions = (float4 *) pos;
         float4 *acc = (float4 *) accel;
-        int size = N*sizeof(float4);
-
-        float4 * d_pos, *d_acc;
-        int d_size = N*sizeof(float4);
-        cudaMalloc((void **) &d_pos,d_size);
-        cudaMalloc((void **) &d_acc,d_size);
-	cudaMemcpy(d_pos,positions,size,cudaMemcpyHostToDevice);
-        cudaMemcpy(d_acc,acc,size,cudaMemcpyHostToDevice);
-
-        calculate_forces<<<(N+NThreads-1)/NThreads,NThreads,NThreads*sizeof(float4)>>>(d_pos,d_pos,d_acc,N, N);
-        cudaMemcpy(acc,d_acc,size,cudaMemcpyDeviceToHost);
-	//cudaMemcpy(positions,d_pos,size,cudaMemcpyDeviceToHost);
+        
+        int numdevs = 0;
+        cudaGetNumDevices(&numdevs);
+        
+        cudaStream_t * streams = new cudaStream_t[numdevs];
+        cudaEvent_t * events = new cudaEvent_t[numdevs];
+        
+        int * devicesinks = new int[numdevs];
+        size_t *offset = new size_t[numdevs];
+        size_t total_offset = 0;
+        int remainingsinks = N;
+        int allotment = N/numdevs;
+        int d_sourcesize = N*sizeof(float4);
+        
+        float4 ** d_pos = new float4 *[numdevs];
+        float4 ** d_acc = new float4 *[numdevs];
+        
+        for(int i = 0; i < numdevs; i++){
+        	
+        	//create the streams and events
+        	cudaStreamCreate(&streams[i]);
+        	cudaEventCreate(&events[i]);
+        	
+        	//figure out how many sinks to give each device
+        	if (remainingsources > allotment) devicesources[i] = allotment;
+        	else devicesources[i] = allotment;
+        	remainingsources -= devicesources[i];
+        	
+        	//calculate the offset for each device
+        	
+        	offset[i] = total_offset;
+        	total_offset += devicesources[i];
+        	
+        	cudaSetDevice(i);
+        	
+        	int d_sinksize = devicessinks[i] *sizeof(float4);
+        	cudaMalloc((void **) &d_pos[i],d_sourcesize);
+        	cudaMalloc((void **) &d_acc[i],d_sinksize);      	
+        }
+        
+        
+        
+        for(int i = 0; i < numdevs; i++){
+        	cudaSetDevice(i);
+        	int d_sinksize = devicessinks[i] *sizeof(float4);
+        	cudaMemcpyAsync(d_pos[i], positions, d_sourcesize,,cudaMemcpyHostToDevice,streams[i]);
+        	cudaMemcpyAsync(d_acc[i], acc, d_sinksize,streams[i]);    	
+        }
+        
+        for(int i = 0; i < numdevs; i++){
+        	cudaSetDevice(i);
+        	calculate_forces<<<(N+NThreads-1)/NThreads,NThreads,NThreads*sizeof(float4),s[i]>>>(d_pos,d_pos + offset[i], d_acc[i] ,N, devicesinks[i]);
+        }
+        
+        for(int i = 0; i < numdevs; i++){
+        	cudaSetDevice(i);
+        	int d_sinksize = devicessinks[i] *sizeof(float4);
+        	cudaMemcpyAsync(acc+offset[i],d_acc[i],d_sinksize,cudaMemcpyDeviceToHost,streams[i]);
+        	cudaEventRecord(events[d],s[d]);        	
+        }
+        
+        //wait for all devices to complete
+        for(int i = 0; i < numdevs; i++) cudaEventSynchronize(events[d]);    
 }
