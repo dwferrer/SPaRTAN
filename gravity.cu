@@ -18,7 +18,7 @@ bodyBodyInteraction(float4 bi, float4 bj, float4 ai)
         float distSixth = distSqr * distSqr * distSqr;
         float invDistCube = 1.0f/sqrtf(distSixth);
         // s = m_j * invDistCube [1 FLOP]
-        float s = bj.w * invDistCube;
+        float s = -bj.w * invDistCube;
         // a_i = a_i + s * r_ij [6 FLOPS]
         ai.x += r.x * s;
         ai.y += r.y * s;
@@ -52,7 +52,7 @@ tile_calculation(float4 myPosition, float4 accel){
         for (i = 0; i < blockDim.x; i++) {
         accel = bodyBodyInteraction(myPosition, shPosition[i], accel);
         }
-        return -accel;
+        return accel;
         }
 
 __global__ void
