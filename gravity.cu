@@ -122,7 +122,7 @@ void gpugravity(float * pos, float *accel, long long int N){
         	
         	cudaSetDevice(i);
         	
-        	int d_sinksize = devicessinks[i] *sizeof(float4);
+        	int d_sinksize = devicesinks[i] *sizeof(float4);
         	cudaMalloc((void **) &d_pos[i],d_sourcesize);
         	cudaMalloc((void **) &d_acc[i],d_sinksize);      	
         }
@@ -131,7 +131,7 @@ void gpugravity(float * pos, float *accel, long long int N){
         
         for(int i = 0; i < numdevs; i++){
         	cudaSetDevice(i);
-        	int d_sinksize = devicessinks[i] *sizeof(float4);
+        	int d_sinksize = devicesinks[i] *sizeof(float4);
         	cudaMemcpyAsync(d_pos[i], positions, d_sourcesize,cudaMemcpyHostToDevice,streams[i]);
         	cudaMemcpyAsync(d_acc[i], acc, d_sinksize,cudaMemcpyHostToDevice,streams[i]);    	
         }
@@ -143,7 +143,7 @@ void gpugravity(float * pos, float *accel, long long int N){
         
         for(int i = 0; i < numdevs; i++){
         	cudaSetDevice(i);
-        	int d_sinksize = devicessinks[i] *sizeof(float4);
+        	int d_sinksize = devicesinks[i] *sizeof(float4);
         	cudaMemcpyAsync(acc+offset[i],d_acc[i],d_sinksize,cudaMemcpyDeviceToHost,streams[i]);
         	cudaEventRecord(events[i],streams[i]);        	
         }
