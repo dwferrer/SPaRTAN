@@ -95,11 +95,10 @@ void testDirect(){
 	std::cout<<"Rate: "<< (double)(size*size)/(pow(10,9)*runtime.Elapsed())<<" Gdirect/s \n\n";
 	runtime.Clear();
 	runtime.Start();
-	return;        
-//directGrav(particles,acc2,.0001);
+	directGrav(particles,acc2,.0001);
         runtime.Stop();
         std::cout<<"\nCPU Run time: "<<runtime.Elapsed()<<" s\n";
-        //std::cout<<"Rate: "<< (double)(size*size)/(pow(10,9)*runtime.Elapsed())<<" Gdirect/s \n\n";
+        std::cout<<"Rate: "<< (double)(size*size)/(pow(10,9)*runtime.Elapsed())<<" Gdirect/s \n\n";
 
 	for(int i = 0; i <size; i++){
 		if( (2*(acc[i]-acc2[i]).norm())/(acc[i].norm() +acc2[i].norm()+1e-15) >= 1e-4){
