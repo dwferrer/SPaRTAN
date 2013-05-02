@@ -18,7 +18,7 @@ bodyBodyInteraction(float4 bi, float4 bj, float4 ai)
         float distSixth = distSqr * distSqr * distSqr;
         float invDistCube = 1.0f/sqrtf(distSixth);
         // s = m_j * invDistCube [1 FLOP]
-        float s = -bj.w * invDistCube;
+        float s = bj.w * invDistCube;
         // a_i = a_i + s * r_ij [6 FLOPS]
         ai.x += r.x * s;
         ai.y += r.y * s;
@@ -75,7 +75,7 @@ calculate_forces(void *devX, void *devA,long long int N)
                 __syncthreads();
         }
         // Save the result in global memory for the integration step.
-        float4 acc4 = {acc.x, acc.y, acc.z, 0.0f};
+        float4 acc4 = {acc.x, acc.y, acc.z, acc.w};
         globalA[gtid] = acc4;
 }
 
@@ -92,7 +92,7 @@ void gpugravity(float * pos, float *accel, long long int N){
 
 
         cudaMemcpy(d_pos,positions,size,cudaMemcpyHostToDevice);
-        cudaMemcpy(d_acc,positions,size,cudaMemcpyHostToDevice);
+        cudaMemcpy(d_acc,acc,size,cudaMemcpyHostToDevice);
 
         calculate_forces<<<(N+NThreads-1)/NThreads,NThreads,NThreads*sizeof(float4)>>>(d_pos,d_acc,N);
         cudaMemcpy(acc,d_acc,size,cudaMemcpyDeviceToHost);

@@ -56,7 +56,7 @@ void testCoverTree(){
 
 void testDirect(){
 	std::cout<<"\n...Starting Direct Gravity Test...\n";
-	long int size = 113078;
+	long int size = 30000;//113078;
 	particlestructure particles(size);
 	std::cout<<"Size: "<<size<<"\n";
 
@@ -69,23 +69,31 @@ void testDirect(){
 	r = gsl_rng_alloc (T);
 	gsl_rng_set(r,time(0));
 
+	std::vector<float3> acc;
+        acc.resize(size);
+
+	std::vector<float3> acc2;
+        acc2.resize(size);
+
 	for(int i = 0; i < size; i++){
 		float3 pos(gsl_rng_uniform(r),gsl_rng_uniform(r),gsl_rng_uniform(r));
 		particles.pos[i] = pos;
-		particles.mass[i] = 1.0f/size;
+		particles.mass[i] = 1.0e-8f/size;
+		acc[i].x = 0;
+		acc[i].y = 0;
+		acc[i].z = 0;
+		acc2[i].x = 0;
+		acc2[i].y = 0;
+		acc2[i].z = 0;
 	}
 	StopWatch runtime("Direct Runtime");
 	runtime.Start();
-	std::vector<float3> acc;
-	acc.resize(size);
 	cudaGrav(particles,acc,.0001);
 	runtime.Stop();
 	std::cout<<"\nCuda Run time: "<<runtime.Elapsed()<<" s\n";
 	std::cout<<"Rate: "<< (double)(size*size)/(pow(10,9)*runtime.Elapsed())<<" Gdirect/s \n\n";
 	runtime.Clear();
 	runtime.Start();
-        std::vector<float3> acc2;
-        acc2.resize(size);
         directGrav(particles,acc2,.0001);
         runtime.Stop();
         std::cout<<"\nCPU Run time: "<<runtime.Elapsed()<<" s\n";
@@ -223,9 +231,9 @@ void pythonTest(){
 int main(){
 	feenableexcept(FE_INVALID | FE_DIVBYZERO);
 	//testCoverTree();
-	//testDirect();
+	testDirect();
 	//testrTimeStep();
-	pythonTest();
+	//pythonTest();
 
 	//testMicro();
 
