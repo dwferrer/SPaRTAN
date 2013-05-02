@@ -102,7 +102,7 @@ void testDirect(){
 	for(int i = 0; i <size; i++){
 		if( (acc[i]-acc2[i]).norm() >= 1e-5){
 			printf("Error! Particle %d has cudaAcc: (%f,%f,%f) and cpuAcc: (%f,%f,%f) which differ by: %f. \n",i,acc[i].x,acc[i].y,acc[i].z,acc2[i].x,acc2[i].y,acc2[i].z, (acc[i]-acc2[i]).norm());
-			assert((acc[i]-acc2[i]).norm() < 1e-5);
+			assert((2*(acc[i]-acc2[i]).norm())/(acc[i].norm() +acc2[i].norm()) < 1e-5);
 		}
 	}
 	std::cout<<"...............Passed Direct Test................\n";
