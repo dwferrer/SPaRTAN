@@ -56,7 +56,7 @@ tile_calculation(float4 myPosition, float4 accel){
         }
 
 __global__ void
-calculate_forces(void *devXsource, void * devXsink, void *devA, int Nsource, int Nsink)
+calculate_forces(void *devXsource, void * devXsink, void *devA, int Nsource, int Nsink, int numdevs)
 {
         float4 *shPosition = SharedMemory<float4>();
         float4 *globalXsource = (float4 *)devXsource;
@@ -66,6 +66,7 @@ calculate_forces(void *devXsource, void * devXsink, void *devA, int Nsource, int
         int i, tile;
         float4 acc;
         int gtid = blockIdx.x * blockDim.x + threadIdx.x;
+        if (gtid >= Nsink) return;
         myPosition = globalXsink[gtid];
         acc.x = globalA[gtid].x; acc.y = globalA[gtid].y; acc.z = globalA[gtid].z; acc.w = globalA[gtid].w;
         for (i = 0, tile = 0; i < Nsource; i += NThreads, tile++) {
@@ -139,7 +140,7 @@ void gpugravity(float * pos, float *accel, long long int N){
         
         for(int i = 0; i < numdevs; i++){
         	cudaSetDevice(i);
-        	calculate_forces<<<(devicesinks[i]+NThreads-1)/NThreads,NThreads,NThreads*sizeof(float4),streams[i]>>>(d_pos[i],&((d_pos[i])[offset[i]]), d_acc[i] ,N, devicesinks[i]);
+        	calculate_forces<<<(devicesinks[i]+NThreads-1)/NThreads,NThreads,NThreads*sizeof(float4),streams[i]>>>(d_pos[i],&((d_pos[i])[offset[i]]), d_acc[i] ,N, devicesinks[i],numdevs);
         }
         
         for(int i = 0; i < numdevs; i++){
