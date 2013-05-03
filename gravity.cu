@@ -80,6 +80,9 @@ calculate_forces(void *devX, void *devA,long long int N)
 }
 
 
+#include <cassert>
+#include <stdio.h>
+
 void gpugravity(float * pos, float *accel, long long int N){
         float4 *positions = (float4 *) pos;
         float4 *acc = (float4 *) accel;
@@ -89,11 +92,10 @@ void gpugravity(float * pos, float *accel, long long int N){
         int d_size = N*sizeof(float4);
         cudaMalloc((void **) &d_pos,d_size);
         cudaMalloc((void **) &d_acc,d_size);
-
-
-        cudaMemcpy(d_pos,positions,size,cudaMemcpyHostToDevice);
+	cudaMemcpy(d_pos,positions,size,cudaMemcpyHostToDevice);
         cudaMemcpy(d_acc,acc,size,cudaMemcpyHostToDevice);
 
         calculate_forces<<<(N+NThreads-1)/NThreads,NThreads,NThreads*sizeof(float4)>>>(d_pos,d_acc,N);
         cudaMemcpy(acc,d_acc,size,cudaMemcpyDeviceToHost);
+	//cudaMemcpy(positions,d_pos,size,cudaMemcpyDeviceToHost);
 }

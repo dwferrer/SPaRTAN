@@ -56,7 +56,7 @@ void testCoverTree(){
 
 void testDirect(){
 	std::cout<<"\n...Starting Direct Gravity Test...\n";
-	long int size = 30000;//113078;
+	long int size = 30000;//32 *1024;//113078;
 	particlestructure particles(size);
 	std::cout<<"Size: "<<size<<"\n";
 
@@ -67,7 +67,7 @@ void testDirect(){
 
 	T = gsl_rng_default; //The mersene twister
 	r = gsl_rng_alloc (T);
-	gsl_rng_set(r,time(0));
+	gsl_rng_set(r,1234567890);
 
 	std::vector<float3> acc;
         acc.resize(size);
@@ -79,6 +79,7 @@ void testDirect(){
 		float3 pos(gsl_rng_uniform(r),gsl_rng_uniform(r),gsl_rng_uniform(r));
 		particles.pos[i] = pos;
 		particles.mass[i] = 1.0e-8f/size;
+		particles.h[i] =  .0001;
 		acc[i].x = 0;
 		acc[i].y = 0;
 		acc[i].z = 0;
@@ -100,9 +101,9 @@ void testDirect(){
         std::cout<<"Rate: "<< (double)(size*size)/(pow(10,9)*runtime.Elapsed())<<" Gdirect/s \n\n";
 
 	for(int i = 0; i <size; i++){
-		if( (acc[i]-acc2[i]).norm() >= 1e-5){
-			printf("Error! Particle %d has cudaAcc: (%f,%f,%f) and cpuAcc: (%f,%f,%f) which differ by: %f. \n",i,acc[i].x,acc[i].y,acc[i].z,acc2[i].x,acc2[i].y,acc2[i].z, (acc[i]-acc2[i]).norm());
-			assert((2*(acc[i]-acc2[i]).norm())/(acc[i].norm() +acc2[i].norm()) < 1e-5);
+		if( (2*(acc[i]-acc2[i]).norm())/(acc[i].norm() +acc2[i].norm()+1e-15) >= 1e-4){
+			printf("Error! Particle %d has cudaAcc: (%f,%f,%f) and cpuAcc: (%f,%f,%f) which have a relative error of: %f. \n",i,acc[i].x,acc[i].y,acc[i].z,acc2[i].x,acc2[i].y,acc2[i].z, (2*(acc[i]-acc2[i]).norm())/(acc[i].norm() +acc2[i].norm()+1e-15));
+			assert((2*(acc[i]-acc2[i]).norm())/(acc[i].norm() +acc2[i].norm()+1e-15) < 1e-4);
 		}
 	}
 	std::cout<<"...............Passed Direct Test................\n";
@@ -139,12 +140,13 @@ void testrTimeStep(){
 	getrdt = new StopWatch("rdt");
 	int steps = 10;
 	std::cout<<"\n...Starting Single Timestep Test...\n";
-	long int size = cube(60);
+	int n1d = 100;
+	long int size = cube(n1d);
 	particlestructure particles(size);
 
 	std::cout<<"Size: "<<size<<"\n";
 
-	int count = makeHomogeneousSphere(particles,60,rad);
+	int count = makeHomogeneousSphere(particles,n1d,rad);
 	std::cout<<"Sphere count: "<<count<<"\n";
 	StopWatch runtime("Single Timestep");
 	std::vector<float3> a(count,(float3)(0,0,0));
@@ -176,7 +178,7 @@ void testrTimeStep(){
 
 void testMicro(){
 	std::cout<<"\n...Starting Microstep Test...\n";
-	int n1d = 60;
+	int n1d = 100;
 	long int size = cube(n1d);
 	particlestructure particles(size);
 	std::cout<<"Size: "<<size<<"\n";
@@ -231,8 +233,8 @@ void pythonTest(){
 int main(){
 	feenableexcept(FE_INVALID | FE_DIVBYZERO);
 	//testCoverTree();
-	testDirect();
-	//testrTimeStep();
+	//testDirect();
+	testrTimeStep();
 	//pythonTest();
 
 	//testMicro();

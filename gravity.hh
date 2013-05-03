@@ -43,9 +43,10 @@ void gpugravity(float * pos, float *accel, long long int N); //provided by gravi
 void cudaGrav(particlestructure &p, std::vector<float3> &acc,float cfs = 0){
 
 	long long  int np = p.count;
+	int leftover =1024 -( np%1024); //FIXME:This should actually be the number of threads
 	//first we need to copy the particles into good cuda order
-	float * pos = new float[np*4];
-	float *a = new float[np*4];
+	float * pos = new float[(np+leftover)*4];
+	float *a = new float[(np+leftover)*4];
 
 	#pragma omp parallel for schedule(dynamic,1)
 	for(int i = 0; i < np; i++){
@@ -61,8 +62,18 @@ void cudaGrav(particlestructure &p, std::vector<float3> &acc,float cfs = 0){
 		a[4*i +2] = acc[i].z/G;
 		a[4*i +3] = fs;
 	}
-
-	gpugravity(pos,a,np);
+	//we need to pad the remaining data for the cuda code so it doesn't give spurious answers
+	for(int i = np; i <np + leftover; i++){
+		pos[4*i + 0] = 0;
+                pos[4*i + 1] = 0;
+                pos[4*i + 2] = 0;
+                pos[4*i + 3] = 0;
+                a[4*i +0] = 0;
+                a[4*i +1] = 0;
+                a[4*i +2] = 0;
+                a[4*i +3] = 1; //avoids an overflow in divide
+	}
+	gpugravity(pos,a,np+leftover);
 
 #pragma omp parallel for schedule(dynamic,1)
 	for(int i = 0; i < np; i++){
