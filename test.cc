@@ -56,7 +56,7 @@ void testCoverTree(){
 
 void testDirect(){
 	std::cout<<"\n...Starting Direct Gravity Test...\n";
-	long int size = 30000;//32 *1024;//113078;
+	long int size = 500000;//32 *1024;//113078;
 	particlestructure particles(size);
 	std::cout<<"Size: "<<size<<"\n";
 
@@ -95,10 +95,11 @@ void testDirect(){
 	std::cout<<"Rate: "<< (double)(size*size)/(pow(10,9)*runtime.Elapsed())<<" Gdirect/s \n\n";
 	runtime.Clear();
 	runtime.Start();
-        directGrav(particles,acc2,.0001);
+	return;        
+//directGrav(particles,acc2,.0001);
         runtime.Stop();
         std::cout<<"\nCPU Run time: "<<runtime.Elapsed()<<" s\n";
-        std::cout<<"Rate: "<< (double)(size*size)/(pow(10,9)*runtime.Elapsed())<<" Gdirect/s \n\n";
+        //std::cout<<"Rate: "<< (double)(size*size)/(pow(10,9)*runtime.Elapsed())<<" Gdirect/s \n\n";
 
 	for(int i = 0; i <size; i++){
 		if( (2*(acc[i]-acc2[i]).norm())/(acc[i].norm() +acc2[i].norm()+1e-15) >= 1e-4){
@@ -233,8 +234,8 @@ void pythonTest(){
 int main(){
 	feenableexcept(FE_INVALID | FE_DIVBYZERO);
 	//testCoverTree();
-	//testDirect();
-	testrTimeStep();
+	testDirect();
+	//testrTimeStep();
 	//pythonTest();
 
 	//testMicro();
