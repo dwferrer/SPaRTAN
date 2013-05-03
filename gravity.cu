@@ -68,7 +68,7 @@ calculate_forces(void *devXsource, void * devXsink, void *devA, int Nsource, int
         int gtid = blockIdx.x * blockDim.x + threadIdx.x;
         myPosition = globalXsink[gtid];
         acc.x = globalA[gtid].x; acc.y = globalA[gtid].y; acc.z = globalA[gtid].z; acc.w = globalA[gtid].w;
-        for (i = 0, tile = 0; i < N; i += NThreads, tile++) {
+        for (i = 0, tile = 0; i < Nsink; i += NThreads, tile++) {
                 int idx = tile * blockDim.x + threadIdx.x;
                 shPosition[threadIdx.x] = globalXsource[idx];
                 __syncthreads();
@@ -96,7 +96,7 @@ void gpugravity(float * pos, float *accel, long long int N){
 	cudaMemcpy(d_pos,positions,size,cudaMemcpyHostToDevice);
         cudaMemcpy(d_acc,acc,size,cudaMemcpyHostToDevice);
 
-        calculate_forces<<<(N+NThreads-1)/NThreads,NThreads,NThreads*sizeof(float4)>>>(d_pos,dpos,d_acc,N, N);
+        calculate_forces<<<(N+NThreads-1)/NThreads,NThreads,NThreads*sizeof(float4)>>>(d_pos,d_pos,d_acc,N, N);
         cudaMemcpy(acc,d_acc,size,cudaMemcpyDeviceToHost);
 	//cudaMemcpy(positions,d_pos,size,cudaMemcpyDeviceToHost);
 }

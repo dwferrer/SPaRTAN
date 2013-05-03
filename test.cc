@@ -56,7 +56,7 @@ void testCoverTree(){
 
 void testDirect(){
 	std::cout<<"\n...Starting Direct Gravity Test...\n";
-	long int size = 500000;//32 *1024;//113078;
+	long int size = 30000;//32 *1024;//113078;
 	particlestructure particles(size);
 	std::cout<<"Size: "<<size<<"\n";
 
