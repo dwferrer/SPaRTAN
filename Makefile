@@ -16,7 +16,7 @@ pyinterface.o:pyinterface.cc Makefile
 	icc -fpic -MMD $(CXXFLAGS) -c $<
 
 gravity.o:gravity.cu Makefile
-	nvcc -use_fast_math -Xcompiler -fPIC -c $<
+	nvcc -O3 -Xcompiler -fPIC -c $<
 
 clean:
 	rm -f *.o *.d

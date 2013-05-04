@@ -56,7 +56,7 @@ void testCoverTree(){
 
 void testDirect(){
 	std::cout<<"\n...Starting Direct Gravity Test...\n";
-	long int size = 30000;//32 *1024;//113078;
+	long int size = 128*128*128;//30000;//32 *1024;//113078;
 	particlestructure particles(size);
 	std::cout<<"Size: "<<size<<"\n";
 
@@ -94,6 +94,7 @@ void testDirect(){
 	std::cout<<"\nCuda Run time: "<<runtime.Elapsed()<<" s\n";
 	std::cout<<"Rate: "<< (double)(size*size)/(pow(10,9)*runtime.Elapsed())<<" Gdirect/s \n\n";
 	runtime.Clear();
+	return;
 	runtime.Start();
 	directGrav(particles,acc2,.0001);
         runtime.Stop();
@@ -140,7 +141,7 @@ void testrTimeStep(){
 	getrdt = new StopWatch("rdt");
 	int steps = 10;
 	std::cout<<"\n...Starting Single Timestep Test...\n";
-	int n1d = 100;
+	int n1d = 128;
 	long int size = cube(n1d);
 	particlestructure particles(size);
 
@@ -233,8 +234,8 @@ void pythonTest(){
 int main(){
 	feenableexcept(FE_INVALID | FE_DIVBYZERO);
 	//testCoverTree();
-	testDirect();
-	//testrTimeStep();
+	//testDirect();
+	testrTimeStep();
 	//pythonTest();
 
 	//testMicro();
