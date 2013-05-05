@@ -15,6 +15,9 @@ const float rad = 3870.0; //AU
 #define T0 10 //K
 #endif
 
+#ifndef M0
+#define M0 (50*1e6)
+
 int makeHomogeneousSphere(particlestructure &p, int n1d,float radius){
 	int particlesadded = 0;
 	float r2 = radius*radius;
@@ -71,7 +74,7 @@ int makeHomogeneousSphere(particlestructure &p, int n1d,float radius){
 
 #pragma omp parallel for schedule(dynamic,1)
 	for(int i = 0; i < particlesadded; i ++){
-		p.mass[i] = 50.0/((float)(particlesadded));//*(1+ .01*phi[i]);
+		p.mass[i] = M0/((float)(particlesadded));//*(1+ .01*phi[i]);
 		//if (p[i].pos.norm2() ==0) p[i].mass = 1;
 	}
 
