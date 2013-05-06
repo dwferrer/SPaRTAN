@@ -186,15 +186,16 @@ void doRT(particlestructure &p, long long int npackets, float * result,int * cou
 
 	long long int lcount = blocksize;
 	while (lcount >0){
+		std::printf("Propogating light packets. %lld are done and %lld remain.",done,np-done);
 		flannindex.knnSearch(querry,NN,NNd,NSMOOTH,sp); //get the nearest neighbors and distances for each light packet
 
-	#pragma omp parallel for schedule(dynamic,1)
+		#pragma omp parallel for schedule(dynamic,1)
 		for(int i =0; i < lcount; i++){
 			propogateLightPacket(p,l[i]);
 		}
 
 		//cull, scatter, and absorb light packets
-		std::vector<lightpacket *> toswap(blocksize/256 +1);
+		std::vector<lightpacket *> toswap;
 		for (int i = 0; i < lcount; i++){
 			if(cull(l[i],result,counts,n1d) || scatterabsorb(p,l[i])){
 				toswap.push_back(&(l[i]));
