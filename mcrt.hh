@@ -182,7 +182,7 @@ void doRT(particlestructure &p, long long int npackets, float * result,int * cou
 	for(int i =0; i < blocksize; i++){
 		l[i].NN  = (size_t *)NN[i];
 		l[i].NNd = (float *)NNd[i];
-		l[i].position = (float*)query[i];
+		l[i].position = (float3*)query[i];
 	}
 	populateLightPackets_plane(p,l,query,NN,NNd,0,blocksize,np,npackets);
 
