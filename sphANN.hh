@@ -114,7 +114,7 @@ void updateNN(particlestructure &p){
 	}
 }
 
-float density(particlestructure p, float3 position){
+float density(particlestructure &p, float3 position){
 	ANNidxArray NN = new ANNidx[NSMOOTH];
 	ANNdistArray NNd = new ANNdist[NSMOOTH];
 	ANNpoint querry = (float *)&position;
@@ -135,7 +135,7 @@ float density(particlestructure p, float3 position){
 	return result;
 }
 
-float density(particlestructure p, float3 position, size_t * NN, float * NNd){
+float density(particlestructure &p, float3 position, size_t * NN, float * NNd){
 
 	float result = 0;
 	for(int i = 0; i < NSMOOTH; i++)
