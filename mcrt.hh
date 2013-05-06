@@ -125,7 +125,7 @@ void populateLightPackets_plane(particlestructure &p, lightpacket * l,flann::Mat
 
 int wrap(float x, int n1d){
 
-	int result = std::remainderf(x,float(n1d));
+	int result = std::remainder(x,float(n1d));
 	while (result >= n1d) result -= n1d;
 	while (result < 0) result += n1d;
 	return result;
