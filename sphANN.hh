@@ -54,6 +54,26 @@ void destroyCoverTree(){
 }
 
 
+float smoothingLength(particlestructure &p, float3 pos){ //get the smoothing length for a generic position
+
+	ANNidxArray NN = new ANNidx[NSMOOTH];
+	ANNdistArray NNd = new ANNdist[NSMOOTH];
+	ANNpoint querry = &pos;
+	kdtree->annkSearch(querry,NSMOOTH,NN,NNd,0.0);
+
+	float maxdist = 0;
+	for(int i = 0; i < NSMOOTH; i++){
+		float dist = NNd[i];
+		if (dist > maxdist) maxdist = dist;
+	}
+	float h = sqrt(maxdist)/2.0;
+	assert(h >0);
+	delete[] NN;
+	delete[] NNd;
+	return h;
+}
+
+
 float smoothingLength(particlestructure &p, int k){ //get the smoothing length for particle k
 	if (p.clean[k]) return p.h[k];
 
@@ -82,6 +102,27 @@ void updateNN(particlestructure &p){
 		kdtree->annkSearch(pts[i],NSMOOTH,p.getNN(i),p.getNNdist(i),0.0);
 		//for(int j = 0; j < NSMOOTH-1; j++) assert(p.getNN(i)[j] == p.getNN(i)[j+1] ); //Make sure we got discrete points
 	}
+}
+
+float density(particlestructure p, float3 position){
+	ANNidxArray NN = new ANNidx[NSMOOTH];
+	ANNdistArray NNd = new ANNdist[NSMOOTH];
+	ANNpoint querry = &position;
+	kdtree->annkSearch(querry,NSMOOTH,NN,NNd,0.0);
+
+	float result = 0;
+	for(int i = 0; i < NSMOOTH; i++)
+	{
+		float x = p.getNNdist(k)[i];
+		result += p.mass[p.getNN(k)[i]] * kernel(x,smoothingLength(p,p.getNN(k)[i]));
+	}
+	//result06+= p.mass *kernel(0,p.h);
+	//if(createdNN) delete NN;
+
+	assert(result > 0);
+	delete[] NN;
+	delete[] NNd;
+	return result;
 }
 
 float density(particlestructure &p,int k){
