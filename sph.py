@@ -190,6 +190,12 @@ def runsingle(steps):
     
 
 
+def mcrt(ps,npackets,n1d,blocksize = 1024*16):
+    tauimage = np.zeros((6,n1d,n1d),dtype = np.float32)
+    counts = np.zeros((6,n1d,n1d),dtype = np.int32)
+    
+    sphlib.mcrt(ps,ct.c_longlong(npackets),arrayToCPointer(sanitize(tauimage)),np.ascontiguousarray(counts.ctypes.data_as(ct.POINTER(ct.c_int32))),n1d,blocksize)
+
 if __name__ == '__main__':    
     n1d = 160
     '''

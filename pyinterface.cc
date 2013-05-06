@@ -284,5 +284,9 @@ float rts(particlestructure *ps,bool first, bool last, float3 * lastacc, float *
 }
 }
 
+void mcrt(particlestructure *ps, long long int npackets,float * result,int * counts, int n1d, long long int blocksize = 1<<20){
+	doRT(*ps, npackets,result,counts,n1d,blocksize );
+}
+
 
 #endif /* PYINTERFACE_HH_ */

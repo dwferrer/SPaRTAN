@@ -231,6 +231,29 @@ void pythonTest(){
 
 }
 
+void testmcrt(){
+
+	int n1d = 160;
+	long int size = cube(n1d);
+	particlestructure particles(size);
+
+	std::cout<<"Size: "<<size<<"\n";
+
+	int count = makeHomogeneousSphere(particles,n1d,rad);
+
+	updateSmoothingLenghts(particles,count);
+
+	int imageN1d = 4096;
+	float * images = new float[6 * sq(imageN1d)];
+	int * counts = new int[6 * sq(imageN1d)];
+
+	doRT(particles,1<<30,images,counts,imageN1d,1<<20);
+
+	delete [] images;
+	delete [] counts;
+
+}
+
 int main(){
 	feenableexcept(FE_INVALID | FE_DIVBYZERO);
 	//testCoverTree();
