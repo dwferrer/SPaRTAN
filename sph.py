@@ -168,9 +168,9 @@ def runmodel(steps):
     print "size: "+str(getExtent(ps))
     
 def runsingle(steps):
-    n1d = 60
+    n1d = 160
     ps = sphlib.getPS(n1d)
-    #addturbulence(ps)
+    addturbulence(ps)
     size = sphlib.getsize(ps)
     
     acc = np.zeros((size,3),dtype = np.float32)
@@ -191,7 +191,7 @@ def runsingle(steps):
 
 
 if __name__ == '__main__':    
-    n1d = 40
+    n1d = 160
     '''
     l = np.load("lastrun.npz") 
     pos = l["pos"]
@@ -216,7 +216,7 @@ if __name__ == '__main__':
     #p.plot(pos[:,0],acc[:,0],'.')'''
     #ps, dt = injectIC("step59.npz")
     #resumemodel(60,200,ps,dt,77.602)
-    runsingle(100)
+    runsingle(1000)
     
 
     

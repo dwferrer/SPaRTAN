@@ -141,7 +141,7 @@ void testrTimeStep(){
 	getrdt = new StopWatch("rdt");
 	int steps = 10;
 	std::cout<<"\n...Starting Single Timestep Test...\n";
-	int n1d = 128;
+	int n1d = 160;
 	long int size = cube(n1d);
 	particlestructure particles(size);
 
