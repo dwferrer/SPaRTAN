@@ -73,7 +73,7 @@ float smoothingLength(particlestructure &p, float3 pos){ //get the smoothing len
 	return h;
 }
 
-float smoothingLength(particlestructure &p, float3 pos, unsigned int *NN, float *NNd){ //get the smoothing length for a generic position
+float smoothingLength(particlestructure &p, float3 pos, size_t *NN, float *NNd){ //get the smoothing length for a generic position
 	float maxdist = 0;
 	for(int i = 0; i < NSMOOTH; i++){
 		float dist = NNd[i];
@@ -135,7 +135,7 @@ float density(particlestructure p, float3 position){
 	return result;
 }
 
-float density(particlestructure p, float3 position, unsigned int * NN, float * NNd){
+float density(particlestructure p, float3 position, size_t * NN, float * NNd){
 
 	float result = 0;
 	for(int i = 0; i < NSMOOTH; i++)
