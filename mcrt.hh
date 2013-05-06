@@ -14,15 +14,19 @@ struct lightpacket{
 	float3 position;
 	float3 direction;
 	float tau;
-	float wavelength; //in micron
+	float wavelength; //in microns
 };
 
 float temp(float density){
 	return 10;
 }
 
-float opacity(float density, float T, float wavelength){
-	return .1; //fixme: place holder!!!!
+//units are AU^2 /(1e-6 solar mass)
+float opacity(float density, float T, float wavelength){ //we use the hildebrand dust opacity for now. We retain the temperature and density dependence in case a more complex fit is desired
+	float result = 0;
+	if (wavelength <= 250) result  = 2.5e3 * 1/.1125484 * wavelength;
+	else result  = 6.25e5 * 1/.1125484 * sq(wavelength);
+	return result;
 }
 
 
@@ -38,7 +42,7 @@ float radiativedl(float h, float rho){
 	return h/2;
 }
 
-void propogateLightPacket(particlestructure &p,lightpacket l, float lastdl){
+void propogateLightPacket(particlestructure &p,lightpacket &l, float lastdl){
 
 	float3 currentpos = l.position + l.direction *Clight * lastdl;
 
@@ -49,12 +53,10 @@ void propogateLightPacket(particlestructure &p,lightpacket l, float lastdl){
 
 	float dtau = opticaldepth(dl,opacity(localdensity,temp(localdensity),l.wavelength),l.wavelength);
 
-
-
-
-
-
+	l.tau
 }
+
+
 
 
 #endif /* MCRT_HH_ */
