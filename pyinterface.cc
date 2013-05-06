@@ -24,6 +24,7 @@
 extern "C"{
 
 particlestructure* getPS(int n1d){
+	feenableexcept(FE_INVALID | FE_DIVBYZERO);
 	particlestructure * res = new particlestructure(n1d*n1d*n1d);
 
 	int count = makeHomogeneousSphere(*res,n1d,rad);
@@ -91,6 +92,7 @@ void setT(particlestructure * ps, float * input){
 }
 
 particlestructure* injectIC(long long int n, float3 * pos, float3 * vel, float * T, float * m){
+	feenableexcept(FE_INVALID | FE_DIVBYZERO);
 	particlestructure* p = new particlestructure(n);
 	std::cout<<"N: "<<n<<"\n";
 	std::cout<<"Size: "<<n*sizeof(particlestructure) *n<<"\n";

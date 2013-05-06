@@ -8,6 +8,9 @@
 #ifndef MCRT_HH_
 #define MCRT_HH_
 
+#define FLANN_USE_CUDA
+#include <flann/flann.hpp>
+
 #define Clight 63239726.3451
 
 struct lightpacket{
@@ -42,20 +45,31 @@ float radiativedl(float h, float rho){
 	return h/2;
 }
 
-void propogateLightPacket(particlestructure &p,lightpacket &l, float lastdl){
 
-	float3 currentpos = l.position + l.direction *Clight * lastdl;
+void propogateLightPacket(particlestructure &p,lightpacket &l, float &lastdl){
 
-	float localdensity = density(p,currentpos);
-	float localh = smoothingLength(p, currentpos);
+	l.position += .5 *l.direction * lastdl;
+
+	float localdensity = density(p,l.position);
+	float localh = smoothingLength(p, l.position);
 
 	float dl = radiativedl(localh, localdensity);
 
-	float dtau = opticaldepth(dl,opacity(localdensity,temp(localdensity),l.wavelength),l.wavelength);
+	float dtau = opticaldepth(.5 *(dl + lastdl),opacity(localdensity,temp(localdensity),l.wavelength),l.wavelength);
 
-	l.tau
+
+	l.tau -=dtau;
+
+	l.position += .5 *l.direction *dl;
 }
 
+#define MAXX (50 * rad)
+// macro for accessing the array of boundary points
+#define boundary(arr,np,x,y,z) (arr[(x + 2 *y + 4*z)])
+
+void doRT(particlestructure &p, long long int npackets, float * result,int * counts, int n1d){
+
+}
 
 
 

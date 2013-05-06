@@ -159,10 +159,10 @@ float density(particlestructure &p,int k){
 #endif
 
 #ifndef rhoc
-#define rhoc (6.73 *pow(10,-8))
+#define rhoc (6.73 *pow(10,-2))
 #endif
 
-float pressure(particlestructure &p, int k){ //units of [Msun /(AU ka^2)]
+float pressure(particlestructure &p, int k){ //units of [10^-6Msun /(AU ka^2)]
 	if(p.T[k] == 0.0) return 0;
 	float rho = density(p,k);
 	return c0*c0 * rho * ( 1+ pow(rho/rhoc,2/5));
@@ -197,9 +197,11 @@ float3 delbarWij(particlestructure &p, int i, int j){  //fully symmetric kernel 
 	return .5 * (delWij(rij,smoothingLength(p,i))+delWij(rij,smoothingLength(p,j)));
 
 }
-#define gamma 1.66666667
+//#define gamma 1.66666667
 
 float cs(particlestructure &p, int k){
+	float rho = density(p,k);
+	float gamma = 4.0/3 + .06666667 * rho/(rho + rhoc);
 	return sqrt(gamma * pressure(p,k)/density(p,k));
 }
 
@@ -236,8 +238,9 @@ float PIij(particlestructure &p,int i, int j){
 	return -nu * delvij;
 }
 
-
-
+#ifndef RHOMIN
+#define RHOMIN 1e-18
+#endif
 float3 accel(particlestructure &p, int i){ //fluid driven acceleration units are [AU /ka^2]
 
 	 int *NN = (p.getNN(i));
@@ -247,8 +250,10 @@ float3 accel(particlestructure &p, int i){ //fluid driven acceleration units are
 
 	float3 result = float3(0,0,0);
 	if(p.T[i] == 0) return result;
+	if(density(p,i) < RHOMIN) return result; //we don't really have a fluid any more at this point
 	for(int j = 0; j < NSMOOTH; j++){ //from springel+ hernquist, 2002
 		if (p.T[NN[j]] ==0) continue;
+		if (density(p,NN[j]) < RHOMIN)
 		result += p.mass[NN[j]] *(   pressure(p,i)/sq(density(p,i))  +  pressure(p,NN[j])/sq(density(p,NN[j])) + PIij(p,i,NN[j]) )*delbarWij(p,i,NN[j]);
 		assert(result == result); //check for nans
 	}
