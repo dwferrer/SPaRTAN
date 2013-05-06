@@ -110,7 +110,6 @@ void populateLightPacket_plane(lightpacket &l,int d, int tb){ //put a bunch of l
 
 void populateLightPackets_plane(particlestructure &p, lightpacket * l,flann::Matrix<float> &pos,flann::Matrix<size_t>   NN,flann::Matrix<float> &NNd,long long int start,  long long int count, long long int total, long long int np){ //for now we just use the plane generator
 	for(int i = 0; i < count; i++ ){
-		l[i].position = (float3 *)(pos[start +i]);
 
 		int c = (start +i)/np;
 		int d = c/3;
@@ -171,23 +170,25 @@ void doRT(particlestructure &p, long long int npackets, float * result,int * cou
 	flann::Index<flann::L2<float> > flannindex( pos, params );
 	flannindex.buildIndex();
 
-	flann::Matrix<float> querry(new float[3*blocksize],blocksize,3);
+	flann::Matrix<float> query(new float[3*blocksize],blocksize,3);
 	flann::Matrix<size_t>   NN(new size_t[NSMOOTH *blocksize],blocksize,NSMOOTH);
 	flann::Matrix<float> NNd(new float[NSMOOTH *blocksize],blocksize,NSMOOTH);
 	long long int done = 0;
 
 	lightpacket *l = new lightpacket[blocksize];
 
-	populateLightPackets_plane(p,l,querry,NN,NNd,0,blocksize,np,npackets);
+
 	for(int i =0; i < blocksize; i++){
 		l[i].NN  = (size_t *)NN[i];
 		l[i].NNd = (float *)NNd[i];
+		l[i].position = (float*)query[i];
 	}
+	populateLightPackets_plane(p,l,query,NN,NNd,0,blocksize,np,npackets);
 
 	long long int lcount = blocksize;
 	while (lcount >0){
-		std::printf("Propogating light packets. %lld are done and %lld remain.",done,np-done);
-		flannindex.knnSearch(querry,NN,NNd,NSMOOTH,sp); //get the nearest neighbors and distances for each light packet
+		std::printf("Propogating light packets. %lld are done and %lld remain.\n",done,np-done);
+		flannindex.knnSearch(query,NN,NNd,NSMOOTH,sp); //get the nearest neighbors and distances for each light packet
 
 		#pragma omp parallel for schedule(dynamic,1)
 		for(int i =0; i < lcount; i++){
@@ -211,10 +212,10 @@ void doRT(particlestructure &p, long long int npackets, float * result,int * cou
 			tofill = np-done;
 			lcount -=toswap.size() - tofill;
 		}
-		populateLightPackets_plane(p,l,pos,NN,NNd,done,tofill,np,npackets);
+		populateLightPackets_plane(p,l,query,NN,NNd,done,tofill,np,npackets);
 	}
 
-	delete [] querry.ptr();
+	delete [] query.ptr();
 	delete [] NN.ptr();
 	delete [] NNd.ptr();
 }
