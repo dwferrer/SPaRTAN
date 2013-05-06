@@ -32,7 +32,7 @@ gsl_rng * rngsetup(){
 
 struct lightpacket{
 	float3 *position;
-	unsigned int *NN;
+	size_t *NN;
 	float  *NNd;
 	float3  direction;
 	float   tau;
@@ -86,7 +86,7 @@ void propogateLightPacket(particlestructure &p,lightpacket &l){
 
 	l.tau -=dtau;
 
-	l.position += .5 *l.direction *dl;
+	*(l.position) += .5 *l.direction *dl;
 	l.lastdl = dl;
 }
 
@@ -108,7 +108,7 @@ void populateLightPacket_plane(lightpacket &l,int d, int tb){ //put a bunch of l
 		l.tau = 0;
 }
 
-void populateLightPackets_plane(particlestructure &p, lightpacket * l,flann::Matrix<float> &pos,flann::Matrix<unsigned int>   NN,flann::Matrix<float> &NNd,long long int start,  long long int count, long long int total, long long int np){ //for now we just use the plane generator
+void populateLightPackets_plane(particlestructure &p, lightpacket * l,flann::Matrix<float> &pos,flann::Matrix<size_t>   NN,flann::Matrix<float> &NNd,long long int start,  long long int count, long long int total, long long int np){ //for now we just use the plane generator
 	for(int i = 0; i < count; i++ ){
 		l[i].position = (float3 *)(pos[start +i]);
 
@@ -125,7 +125,7 @@ void populateLightPackets_plane(particlestructure &p, lightpacket * l,flann::Mat
 
 int wrap(float x, int n1d){
 
-	int result = (int)(x%(2*MAXX));
+	int result = std::modf(x,n1d);
 	while (result >= n1d) result -= n1d;
 	while (result < 0) result += n1d;
 	return result;
@@ -141,8 +141,8 @@ bool cull(lightpacket &l,float * result, int *counts, int n1d){
 		else{
 			int tb = -1;
 			if(pos[d] > -MAXX) tb = 1;
-			int x = wrap(pos[wrap(d+1,3)],n1d);
-			int y = wrap(pos[wrap(d+2,3)],n1d);
+			int x = wrap(pos[wrap(d+1,3)]/(2 *MAXX) *n1d,n1d);
+			int y = wrap(pos[wrap(d+2,3)]/(2 *MAXX) *n1d,n1d);
 			boundary(result,d,tb,x,y) += l.tau;
 			boundary(counts,d,tb,x,y) += 1;
 			return true;
@@ -172,7 +172,7 @@ void doRT(particlestructure &p, long long int npackets, float * result,int * cou
 	flannindex.buildIndex();
 
 	flann::Matrix<float> querry(new float[3*blocksize],blocksize,3);
-	flann::Matrix<unsigned int>   NN(new unsigned int[NSMOOTH *blocksize],blocksize,NSMOOTH);
+	flann::Matrix<size_t>   NN(new size_t[NSMOOTH *blocksize],blocksize,NSMOOTH);
 	flann::Matrix<float> NNd(new float[NSMOOTH *blocksize],blocksize,NSMOOTH);
 	long long int done = 0;
 
@@ -180,7 +180,7 @@ void doRT(particlestructure &p, long long int npackets, float * result,int * cou
 
 	populateLightPackets_plane(p,l,querry,NN,NNd,0,blocksize,np,npackets);
 	for(int i =0; i < blocksize; i++){
-		l[i].NN  = (unsigned int *)NN[i];
+		l[i].NN  = (size_t *)NN[i];
 		l[i].NNd = (float *)NNd[i];
 	}
 
