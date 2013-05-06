@@ -106,6 +106,7 @@ void populateLightPacket_plane(lightpacket &l,int d, int tb){ //put a bunch of l
 
 		l.wavelength = 1000;
 		l.tau = 0;
+		l.lastdl = 0;
 }
 
 void populateLightPackets_plane(particlestructure &p, lightpacket * l,flann::Matrix<float> &pos,flann::Matrix<size_t>   NN,flann::Matrix<float> &NNd,long long int start,  long long int count, long long int total, long long int np){ //for now we just use the plane generator
