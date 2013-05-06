@@ -244,8 +244,8 @@ void testmcrt(){
 	updateSmoothingLenghts(particles,count);
 
 	int imageN1d = 4096;
-	float * images = new float[6 * sq(imageN1d)];
-	int * counts = new int[6 * sq(imageN1d)];
+	float * images = new float[6 * imageN1d*imageN1d];
+	int * counts = new int[6 * imageN1d*imageN1d];
 
 	doRT(particles,1<<30,images,counts,imageN1d,1<<20);
 
@@ -258,9 +258,9 @@ int main(){
 	feenableexcept(FE_INVALID | FE_DIVBYZERO);
 	//testCoverTree();
 	//testDirect();
-	testrTimeStep();
+	//testrTimeStep();
 	//pythonTest();
-
+	testmcrt();
 	//testMicro();
 
 	return 0;

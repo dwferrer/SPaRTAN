@@ -13,6 +13,7 @@
 #include <gsl/gsl_rng.h>
 
 #include "sphANN.hh"
+#include <math.h>
 
 #define Clight 63239726.3451
 
@@ -26,6 +27,7 @@ gsl_rng * rngsetup(){
 	T = gsl_rng_default; //The mersene twister
 	r = gsl_rng_alloc (T);
 	gsl_rng_set(r,1234567890);
+	return r;
 }
 
 struct lightpacket{
@@ -66,13 +68,13 @@ float opticaldepth(float pathlength, float opacity, float density){
 }
 
 float radiativedl(float h, float rho){
-	return min(h/2,rad/10);
+	return std::min(h/2,rad/10);
 }
 
 
 void propogateLightPacket(particlestructure &p,lightpacket &l){
 
-	*l.position += .5 *l.direction * l.lastdl;
+	*(l.position) += .5 *l.direction * l.lastdl;
 
 	float localdensity = density(p,*l.position,l.NN,l.NNd);
 	float localh = smoothingLength(p, *l.position,l.NN,l.NNd);
@@ -123,7 +125,7 @@ void populateLightPackets_plane(particlestructure &p, lightpacket * l,flann::Mat
 
 int wrap(float x, int n1d){
 
-	int result = x%(2*MAXX);
+	int result = (int)(x%(2*MAXX));
 	while (result >= n1d) result -= n1d;
 	while (result < 0) result += n1d;
 	return result;
@@ -162,7 +164,7 @@ void doRT(particlestructure &p, long long int npackets, float * result,int * cou
 	long long int np = 6 *npackets;
 	assert(blocksize < npackets);
 	mcrng = rngsetup();
-	flann::Matrix<float> pos((float)(p.pos),p.count,3);
+	flann::Matrix<float> pos((float *)(p.pos),p.count,3);
 
 	flann::KDTreeCuda3dIndexParams params;
 	flann::SearchParams sp;
@@ -178,8 +180,8 @@ void doRT(particlestructure &p, long long int npackets, float * result,int * cou
 
 	populateLightPackets_plane(p,l,querry,NN,NNd,0,blocksize,np,npackets);
 	for(int i =0; i < blocksize; i++){
-		l[i].NN  = (int *)NN[i];
-		l[i].NNd = (float3 *)NNd[i];
+		l[i].NN  = (unsigned int *)NN[i];
+		l[i].NNd = (float *)NNd[i];
 	}
 
 	long long int lcount = blocksize;
