@@ -38,21 +38,20 @@ float radiativedl(float h, float rho){
 	return h/2;
 }
 
-void propogateLightPacket(particlestructure &p,lightpacket l, float lastdl){
+void propogateLightPacket(particlestructure &p,lightpacket &l, float &lastdl){
 
-	float3 currentpos = l.position + l.direction *Clight * lastdl;
+	l.position += .5 *l.direction * lastdl;
 
-	float localdensity = density(p,currentpos);
-	float localh = smoothingLength(p, currentpos);
+	float localdensity = density(p,l.position);
+	float localh = smoothingLength(p, l.position);
 
 	float dl = radiativedl(localh, localdensity);
 
-	float dtau = opticaldepth(dl,opacity(localdensity,temp(localdensity),l.wavelength),l.wavelength);
+	float dtau = opticaldepth(.5 *(dl + lastdl),opacity(localdensity,temp(localdensity),l.wavelength),l.wavelength);
 
+	l.tau -=dtau;
 
-
-
-
+	l.position += .5 *l.direction *dl;
 
 }
 
