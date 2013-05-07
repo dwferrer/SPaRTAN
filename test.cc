@@ -240,7 +240,8 @@ void testmcrt(){
 	std::cout<<"Size: "<<size<<"\n";
 
 	int count = makeHomogeneousSphere(particles,n1d,rad);
-
+	setupCoverTree(particles, count);
+	updateNN(particles);
 	updateSmoothingLenghts(particles,count);
 
 	int imageN1d = 4096;
