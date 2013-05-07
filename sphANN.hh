@@ -58,7 +58,7 @@ float smoothingLength(particlestructure &p, float3 pos){ //get the smoothing len
 
 	ANNidxArray NN = new ANNidx[NSMOOTH];
 	ANNdistArray NNd = new ANNdist[NSMOOTH];
-	ANNpoint querry = &pos;
+	ANNpoint querry = (float *)&pos;
 	kdtree->annkSearch(querry,NSMOOTH,NN,NNd,0.0);
 
 	float maxdist = 0;
@@ -117,14 +117,14 @@ void updateNN(particlestructure &p){
 float density(particlestructure p, float3 position){
 	ANNidxArray NN = new ANNidx[NSMOOTH];
 	ANNdistArray NNd = new ANNdist[NSMOOTH];
-	ANNpoint querry = &position;
+	ANNpoint querry = (float *)&position;
 	kdtree->annkSearch(querry,NSMOOTH,NN,NNd,0.0);
 
 	float result = 0;
 	for(int i = 0; i < NSMOOTH; i++)
 	{
-		float x = p.getNNdist(k)[i];
-		result += p.mass[p.getNN(k)[i]] * kernel(x,smoothingLength(p,p.getNN(k)[i]));
+		float x = NNd[i];
+		result += p.mass[NN[i]] * kernel(x,smoothingLength(p,NN[i]));
 	}
 	//result06+= p.mass *kernel(0,p.h);
 	//if(createdNN) delete NN;
@@ -140,8 +140,8 @@ float density(particlestructure p, float3 position, unsigned int * NN, float * N
 	float result = 0;
 	for(int i = 0; i < NSMOOTH; i++)
 	{
-		float x = p.getNNdist(k)[i];
-		result += p.mass[p.getNN(k)[i]] * kernel(x,p.h[p.getNN(k)[i]]);
+		float x = NNd[i];
+		result += p.mass[NN[i]] * kernel(x,p.h[NN[i]]);
 	}
 
 	assert(result > 0);

@@ -9,7 +9,7 @@
 #define GRAVITY_HH_
 
 #ifndef G
-#define G (39.42f *) //G *10(-6)Msun*(1 ka)^2/(1 au)^3. change for other units
+#define G (39.42f) //G *10(-6)Msun*(1 ka)^2/(1 au)^3. change for other units
 #endif
 #ifndef FS
 #define FS 1.0

@@ -17,6 +17,7 @@ const float rad = 3870.0; //AU
 
 #ifndef M0
 #define M0 (50*1e6)
+#endif
 
 int makeHomogeneousSphere(particlestructure &p, int n1d,float radius){
 	int particlesadded = 0;

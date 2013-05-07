@@ -1,7 +1,7 @@
 CXX=icc
 CUDACC=nvcc
 CXXFLAGS=-O0 -g3 -no-prec-div -openmp -I./ann_float/include/
-LIBS := -lgsl -lgslcblas -lm -liomp5 -lcuda -L/usr/local/cuda-5.0/lib64/ -lcudart -L./ann_float/lib/ -lANN
+LIBS := -lgsl -lgslcblas -lm -liomp5 -lcuda -L/usr/local/cuda-5.0/lib64/ -lcudart -L./ann_float/lib/ -lANN -lflann_cuda
 
 all: testsph libsph.so
 
